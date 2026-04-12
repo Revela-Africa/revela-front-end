@@ -1,15 +1,93 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Syne, Inter, DM_Sans, Space_Grotesk } from "next/font/google";
 import "./globals.css";
+import CustomCursor from "./components/CustomCursor";
+import localFont from "next/font/local";
+import BlobBackground from "./components/BlobBackground";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+const syne = Syne({
+  variable: "--font-syne",
   subsets: ["latin"],
 });
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
+const inter = Inter({
+  variable: "--font-inter",
   subsets: ["latin"],
+});
+const dmSans = DM_Sans({
+  variable: "--font-dm-sans",
+  subsets: ["latin"],
+});
+const spaceGrotesk = Space_Grotesk({
+  variable: "--font-space-grotesk",
+  subsets: ["latin"],
+});
+const clash = localFont({
+  src: [
+    {
+      path: "/assets/fonts/clash-display/ClashDisplay-Extralight.woff2",
+      weight: "200",
+    },
+    {
+      path: "/assets/fonts/clash-display/ClashDisplay-Light.woff2",
+      weight: "300",
+    },
+    {
+      path: "/assets/fonts/clash-display/ClashDisplay-Regular.woff2",
+      weight: "400",
+    },
+    {
+      path: "/assets/fonts/clash-display/ClashDisplay-Medium.woff2",
+      weight: "500",
+    },
+    {
+      path: "/assets/fonts/clash-display/ClashDisplay-Semibold.woff2",
+      weight: "600",
+    },
+    {
+      path: "/assets/fonts/clash-display/ClashDisplay-Bold.woff2",
+      weight: "700",
+    },
+  ],
+  variable: "--font-clash",
+  display: "swap",
+});
+const cabinet = localFont({
+  src: [
+    {
+      path: "/assets/fonts/cabinet-grotesk/CabinetGrotesk-Thin.woff2",
+      weight: "100",
+    },
+    {
+      path: "/assets/fonts/cabinet-grotesk/CabinetGrotesk-Extralight.woff2",
+      weight: "200",
+    },
+    {
+      path: "/assets/fonts/cabinet-grotesk/CabinetGrotesk-Light.woff2",
+      weight: "300",
+    },
+    {
+      path: "/assets/fonts/cabinet-grotesk/CabinetGrotesk-Regular.woff2",
+      weight: "400",
+    },
+    {
+      path: "/assets/fonts/cabinet-grotesk/CabinetGrotesk-Medium.woff2",
+      weight: "500",
+    },
+    {
+      path: "/assets/fonts/cabinet-grotesk/CabinetGrotesk-Bold.woff2",
+      weight: "700",
+    },
+    {
+      path: "/assets/fonts/cabinet-grotesk/CabinetGrotesk-Extrabold.woff2",
+      weight: "800",
+    },
+    {
+      path: "/assets/fonts/cabinet-grotesk/CabinetGrotesk-Black.woff2",
+      weight: "900",
+    },
+  ],
+  variable: "--font-cabinet",
+  display: "swap",
 });
 
 export const metadata: Metadata = {
@@ -25,9 +103,17 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
+      className={`${syne.variable} ${inter.variable} ${dmSans.variable} ${spaceGrotesk.variable} ${clash.variable} ${cabinet.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col">{children}</body>
+      <body className="min-h-full flex flex-col relative overflow-x-hidden">
+        <BlobBackground />
+
+        <div id="cur" className="relative z-20"></div>
+        <div id="cur-r" className="relative z-20"></div>
+        <CustomCursor />
+
+        <div className="relative z-10 flex flex-col min-h-full">{children}</div>
+      </body>
     </html>
   );
 }
