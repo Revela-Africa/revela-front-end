@@ -106,14 +106,14 @@ const CardGridDisplay = () => {
       <div className="grid grid-cols-1 md:grid-cols-2  gap-5 w-full">
         <BarFeatureCard
           title="Circular Economy"
-          className="h-38"
+          className="minh-h-38"
           description="Parts, metal, and components re-enter the supply chain through our certified network of recyclers and rebuilders."
           icon={<Repeat />}
         />
 
         <BarFeatureCard
           title="Direct Bank Transfer · Always"
-          className="h-38"
+          className="min-h-38"
           description="No cash exchanges, no agent intermediaries. Every naira paid directly to your verified bank account within 48 hours of acceptance."
           icon={<CreditCard />}
         />

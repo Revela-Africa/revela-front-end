@@ -10,11 +10,11 @@ export default function ScrollIndicator() {
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.8, delay: 2 }}
     >
-      {/* Mask container */}
+
       <div className="h-[40px] w-[1px] overflow-hidden relative">
-        {/* Animated line */}
+  
         <motion.div
-          className="w-full h-full bg-gradient-to-b from-(--gold) to-transparent origin-top"
+          className="w-full h-full bg-linear-to-b from-(--gold) to-transparent origin-top"
           animate={{
             scaleY: [0, 1, 1, 0],
           }}

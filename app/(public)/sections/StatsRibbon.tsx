@@ -50,7 +50,7 @@ export default function StatsRibbon() {
         <div className="pointer-events-none absolute right-0 top-0 h-full w-24 z-10 bg-linear-to-l from-(--gold) to-transparent" />
 
         <motion.div
-          className="flex w-max items-center whitespace-nowrap"
+          className="flex w-max items-center font-cabinet whitespace-nowrap"
           animate={{
             x: ["0%", "-50%"],
           }}
@@ -84,7 +84,7 @@ export default function StatsRibbon() {
         </motion.div>
       </div>
 
-      <div className="w-full bg-[#FCF9F3]  border-y border-[#E5E7EB] h-38.75 flex items-center ">
+      <div className="w-full bg-[#FCF9F3]  border-y border-[#E5E7EB] md:h-38.75  flex items-center ">
         <motion.div
           variants={container}
           initial="hidden"
@@ -93,7 +93,7 @@ export default function StatsRibbon() {
           className="container mx-auto px-6 py-10 md:py-14"
         >
           <div
-            className="grid grid-cols-2 md:grid-cols-4 gap-y-8 gap-x-8 text-center 
+            className="grid grid-cols-2 md:grid-cols-4 gap-y-8 gap-x-8  text-center 
         "
           >
             {statValues.map((itemData, index) => (

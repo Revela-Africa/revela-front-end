@@ -3,7 +3,7 @@ import StepCards from "../components/StepCards";
 
 const TheProcess = () => {
   return (
-    <section className=" py-24 w-full  bg-[#FFF9F0]">
+    <section id="how-it-works" className=" py-24 px-5 w-full  bg-[#FFF9F0]">
       <div className="w-full container mx-auto">
         <SectionHeader
           eyebrow="AVAILABLE NOW"

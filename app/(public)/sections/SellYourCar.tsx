@@ -6,8 +6,8 @@ import StackedPhoneCards from "../components/StackedPhoneCards";
 
 const SellYourCar = () => {
   return (
-    <section className=" py-24 w-full bg-[#F5F2EC]">
-      <div className="relative z-10 grid grid-cols-2 gap-16 w-full container mx-auto ">
+    <section className=" py-24 px-5 w-full bg-[#F5F2EC]">
+      <div className="relative z-10 grid grid-cols-1 md:grid-cols-2 gap-16 w-full container mx-auto ">
         <div>
           <SectionHeader
             eyebrow="AVAILABLE NOW"
@@ -23,7 +23,7 @@ const SellYourCar = () => {
           />
         </div>
 
-        <div className="w-full">
+        <div className="w-full ">
           <StackedPhoneCards/>
         </div>
       </div>

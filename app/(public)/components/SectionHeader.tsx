@@ -17,7 +17,7 @@ export default function SectionHeader({
   className,
 }: props) {
   return (
-    <section className={`${className}  w-full  py-12 sm:py-16 lg:py-20 `}>
+    <section className={`${className}  w-full  pb-12  `}>
       <div className="mx-auto flex flex-col gap-16 lg:gap-24">
         <div className="max-w-4xl">
           <motion.p
@@ -33,7 +33,7 @@ export default function SectionHeader({
             initial={{ opacity: 0, y: 18 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.55, ease: "easeOut", delay: 0.05 }}
-            className="mt-8  text-[48px] font-bold font-clash  tracking-[-1.2px] text-(--ink) sm:text-[56px]   "
+            className="mt-8  text-[43px] font-bold font-clash  tracking-[-1.2px] text-(--ink) sm:text-[56px]   "
           >
             <span>{titlePart1} </span> <br />
             <span className="text-(--gold)">{titlePart2}</span>

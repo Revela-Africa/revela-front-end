@@ -3,7 +3,7 @@ import CardGridDisplay from "../components/CardGridDisplay";
 
 const WhatWeBuy = () => {
   return (
-    <section className=" py-24 w-full  bg-[#F5F2EC]">
+    <section className=" py-24 px-5 w-full  bg-[#F5F2EC]">
       <div className="w-full container mx-auto">
         <div className="flex flex-col md:flex-row justify-between gap-x-10">
 

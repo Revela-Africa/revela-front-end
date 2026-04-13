@@ -9,13 +9,15 @@ type FieldObject = {
 interface Props {
   header: string;
   buttonText: string;
-  className?:string;
+  className?: string;
   fields: FieldObject[];
 }
 
-const PhoneCard = ({ header, buttonText,className, fields  }: Props) => {
+const PhoneCard = ({ header, buttonText, className, fields }: Props) => {
   return (
-    <div className={`w-75  text-(--ink) font-cabinet pt-5 pb-8 px-7 shadow-[0_18px_45px_rgba(0,0,0,0.06)] rounded-3xl ring-1 ring-black/5 backdrop-blur-sm border border-[#E8A02040] bg-white/75 ${className}`}>
+    <div
+      className={` w-full  md:w-75  text-(--ink) font-cabinet pt-5 pb-8 px-7 shadow-[0_18px_45px_rgba(0,0,0,0.06)] rounded-3xl ring-1 ring-black/5 backdrop-blur-sm border border-[#E8A02040] bg-white/75 ${className}`}
+    >
       <div className="font-bold text-base mb-10 w-full flex justify-between">
         {header}{" "}
         <span className="size-2.5 bg-(--gold) block rounded-full"></span>
@@ -39,8 +41,7 @@ const PhoneCard = ({ header, buttonText,className, fields  }: Props) => {
 const StackedPhoneCards = () => {
   return (
     <div className={`relative  flex w-full items-end  h-full justify-center `}>
-    
-      <div className=" -mr-20 -mb-3 -rotate-5   hidden md:block">
+      <div className=" hidden lg:block -mr-20 -mb-3 -rotate-5">
         <PhoneCard
           fields={[
             {
@@ -57,9 +58,7 @@ const StackedPhoneCards = () => {
         />
       </div>
 
-
-      <div className="relative z-10">
-
+      <div className="relative z-10 w-full">
         <PhoneCard
           fields={[
             {

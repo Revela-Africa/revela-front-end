@@ -2,6 +2,7 @@ import React from "react";
 import SectionHeader from "../components/SectionHeader";
 import BarFeatureCard from "../components/BarFeatureCard";
 import { Activity, Clock4, Layers } from "lucide-react";
+import ModelCard from "../components/ModelCard";
 
 const ModelSection = () => {
   const barFeatures = [
@@ -26,9 +27,8 @@ const ModelSection = () => {
   ];
 
   return (
-    <section className=" py-24 w-full  bg-[#FFF9F099]">
-      <div className="w-full container mx-auto flex flex-col md:flex-row gap-10">
-
+    <section id="model" className=" py-24 px-5 w-full  bg-[#FFF9F099]">
+      <div className="w-full container mx-auto flex flex-col md:flex-row gap-10 justify-between items-center">
         <div className="flex flex-col md:w-1/2 ">
           <SectionHeader
             eyebrow="OUR MODEL"
@@ -42,7 +42,7 @@ const ModelSection = () => {
             description="A structured assessment calculates your car's true residual value. Every factor disclosed upfront — no surprise deductions at the door."
           />
 
-          <div  className=" flex flex-col gap-y-5 -mt-12">
+          <div className=" flex flex-col gap-y-5 md:-mt-10">
             {barFeatures.map((item, i) => {
               const Icon = item.icon;
 
@@ -50,6 +50,7 @@ const ModelSection = () => {
                 <BarFeatureCard
                   key={i}
                   title={item.title}
+                  className="max-w-140 pr-20"
                   description={item.description}
                   icon={<Icon />}
                 />
@@ -58,8 +59,8 @@ const ModelSection = () => {
           </div>
         </div>
 
-        <div>
-            weeeee
+        <div className=" md:w-1/2 h-full flex items-center justify-center">
+          <ModelCard />
         </div>
       </div>
     </section>

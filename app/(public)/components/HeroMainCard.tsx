@@ -1,6 +1,6 @@
 "use client";
 
-import ProgressBar from "@/app/components/ui/ProgressBar";
+import ProgressBar from "@/components/ui/ProgressBar";
 
 export default function HeroMainCard() {
   return (
@@ -26,19 +26,19 @@ export default function HeroMainCard() {
 
       <div className="relative z-10 flex flex-col">
         <div className="flex items-center font-cabinet text-[#8C826C] gap-2 text-[9px] font-bold tracking-[0.18em] uppercase mb-5">
-          <span className="w-1.5 h-1.5 rounded-full bg-[var(--gold)] hcm-ld" />
+          <span className="w-1.5 h-1.5 rounded-full bg-(--gold) hcm-ld" />
           Live Valuation · 2025
         </div>
 
-        <div className="text-[22px] font-clash font-bold text-[var(--ink)] mb-1">
+        <div className="text-[22px] font-clash font-bold text-(--ink) mb-1">
           2018 Toyota Camry
         </div>
 
-        <div className="text-[10px] font-inter uppercase font-medium text-[var(--ink4)] mb-6">
+        <div className="text-[10px] font-inter uppercase font-medium text-(--ink4) mb-6">
           Lagos, Lekki · Fair Condition · 92k km
         </div>
 
-        <div className="text-[64px] leading-none font-clash text-[var(--gold)] tracking-[-0.02em] mb-2 font-normal">
+        <div className="text-[64px] leading-none font-clash text-(--gold) tracking-[-0.02em] mb-2 font-normal">
           ₦5,200,000
         </div>
 
