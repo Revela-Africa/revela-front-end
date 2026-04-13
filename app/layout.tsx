@@ -116,18 +116,18 @@ export const metadata: Metadata = {
   applicationName: "Revela Africa",
   category: "Automotive Services",
 
-  metadataBase: new URL("https://revela.africa"),
+  metadataBase: new URL("https://revela-africa.vercel.app/"),
 
   openGraph: {
     title:
       "Revela Africa — Instant Valuation for Damaged & End-of-Life Vehicles",
     description:
       "Sell your accidented, high-mileage, or end-of-life vehicle in Nigeria and get a fair, data-driven valuation with direct bank transfer within 48 hours.",
-    url: "https://revela.africa",
+    url: "https://revela-africa.vercel.app/",
     siteName: "Revela Africa",
     images: [
       {
-        url: "/og-image.png",
+        url: "https://revela-africa.vercel.app/icons/revela-meta.png",
         width: 1200,
         height: 630,
         alt: "Revela Africa Vehicle Valuation Platform",
@@ -142,7 +142,7 @@ export const metadata: Metadata = {
     title: "Revela Africa — Sell Your Car Fast in Nigeria",
     description:
       "Instant valuation for damaged, old, and end-of-life vehicles. Get paid directly to your bank account within 48 hours.",
-    images: ["/og-image.png"],
+    images: ["https://revela-africa.vercel.app/"],
   },
 
   robots: {
@@ -157,7 +157,7 @@ export const metadata: Metadata = {
   },
 
   alternates: {
-    canonical: "https://revela.africa",
+    canonical: "https://revela-africa.vercel.app/",
   },
 };
 
