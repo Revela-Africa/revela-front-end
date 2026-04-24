@@ -7,12 +7,12 @@ export default function publicLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`h-full antialiased`}>
-      <body>
+    <>
+      <div>
         <AppNavigation />
         {children}
         <Footer />
-      </body>
-    </html>
+      </div>
+    </>
   );
 }

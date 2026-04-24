@@ -139,7 +139,11 @@ export default function AppNavigation() {
           </ul>
 
           <div className="hidden lg:block">
-            <CustomCta label="Sell your car" href="/" className="text-white" />
+            <CustomCta
+              label="Sell your car"
+              href="/login"
+              className="text-white"
+            />
           </div>
 
           <div className="lg:hidden">
@@ -194,7 +198,7 @@ export default function AppNavigation() {
               >
                 <CustomCta
                   label="Sell your car"
-                  href="/"
+                  href="/login"
                   className="text-white px-8 py-4"
                 />
               </motion.div>
