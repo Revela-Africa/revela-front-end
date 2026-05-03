@@ -38,7 +38,7 @@ export function AppSelect({
       <SelectPrimitive.Trigger
         data-slot="select-trigger"
         className={cn(
-          "flex w-full items-center justify-between font-cabinet text-base gap-1.5 rounded-md border border-[#E098001A] bg-[#FFF9F099] px-3 py-2 font-normal text-gray-700 s outline-none transition focus-visible:border-[#D08B25] focus-visible:ring-2 focus-visible:ring-[#D08B25]/30 disabled:cursor-not-allowed disabled:opacity-50",
+          "flex w-full items-center justify-between font-cabinet text-base gap-1.5 rounded-md border border-[#E098001A] bg-[#FFF9F099] px-3 py-2 font-normal text-(--ink) outline-none transition focus-visible:border-[#D08B25] focus-visible:ring-2 focus-visible:ring-[#D08B25]/30 disabled:cursor-not-allowed disabled:opacity-50",
           triggerClassName,
           className,
         )}

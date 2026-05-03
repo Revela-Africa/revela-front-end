@@ -7,8 +7,8 @@ type AppNavigationCtaProps = {
 };
 
 const CustomCta = ({
-  href = "/",
-  label = "Get Valuation",
+  href= "/",
+  label,
   className,
 }: AppNavigationCtaProps) => {
   return (

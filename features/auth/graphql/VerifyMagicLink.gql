@@ -1,0 +1,9 @@
+mutation verifyMagicLink($token: String!) {
+  verifyMagicLink(token: $token) {
+    accessToken
+    id
+    email
+    fullName
+    role
+  }
+}

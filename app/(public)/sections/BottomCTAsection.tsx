@@ -8,7 +8,7 @@ const BottomCTAsection = () => {
   return (
     <section className="w-full py-24 px-5 bg-[#FDF5E4]">
       <div className="relative z-10 grid grid-cols-1 md:grid-cols-2 gap-10 w-full container mx-auto items-center justify-between ">
-          <OrbitCanvas />
+        <OrbitCanvas />
         <div className="flex flex-col">
           <SectionHeader
             eyebrow="ready?"
@@ -36,10 +36,9 @@ const BottomCTAsection = () => {
           </span>
         </div>
 
-            <div className="relative z-10">
-               <CTACard />
-            </div>
-       
+        <div className="relative z-10">
+          <CTACard />
+        </div>
       </div>
     </section>
   );

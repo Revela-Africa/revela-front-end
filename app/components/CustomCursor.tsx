@@ -71,7 +71,7 @@ export default function CustomCursor() {
 
     // ===== hover logic =====
     const interactiveSelector =
-      "a, button, [role='button'], input, textarea, .bc-cta, .hero-card-main";
+      "a, button, [role='button'], input, textarea, .bc-cta, .hero-card-main, .toast";
 
     const onMoveOver = (e: MouseEvent) => {
       const target = e.target as HTMLElement;

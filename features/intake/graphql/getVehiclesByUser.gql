@@ -1,0 +1,21 @@
+query GetVehiclesByUser {
+  getVehiclesByUser {
+    id
+    status
+    make
+    model
+    year
+    mileage
+    condition
+    tav
+    min
+    max
+    offer
+    imageUrls {
+      imageUrl
+      angle
+    }
+    scheduledAt
+    expiresAt
+  }
+}

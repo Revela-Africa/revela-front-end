@@ -1,0 +1,9 @@
+mutation SubmitVehicle($input: SubmitVehicleInputType!) {
+  submitVehicle(input: $input) {
+    id
+    status
+    tav
+    min
+    max
+  }
+}

@@ -2,7 +2,6 @@ import React, { useState, useEffect, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
 import { AppSelect } from "@/components/ui/AppSelect";
 import CustomCta from "@/app/components/CustomCta";
 
@@ -210,10 +209,9 @@ export default function ModelCard() {
           </div>
         </div>
 
-
-        <CustomCta 
-        label="Accept & Get Full Offer →"
-        className="w-full text-white mt-3 "
+        <CustomCta
+          label="Accept & Get Full Offer →"
+          className="w-full text-white mt-3 "
         />
       </CardContent>
     </Card>
