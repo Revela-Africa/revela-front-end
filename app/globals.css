@@ -94,6 +94,7 @@ body::after {
   --animate-bar: barIn 1.5s 2s ease forwards;
   --animate-blob: blobDrift linear infinite alternate;
 
+
 @keyframes barIn {
 
   to {
@@ -114,6 +115,8 @@ body::after {
       transform: translate(30px, 20px) scale(1.05);
     }
   }
+
+
 }
 
 @keyframes blobFloat {

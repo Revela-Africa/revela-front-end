@@ -17,17 +17,25 @@ type Documents = {
     "mutation initiateRegistration($input: InitiateRegistrationInput!) {\n  initiateRegistration(input: $input)\n}": typeof types.InitiateRegistrationDocument,
     "mutation login($input: LoginInput!) {\n  login(input: $input) {\n    accessToken\n    id\n    email\n    fullName\n    role\n  }\n}": typeof types.LoginDocument,
     "mutation Logout {\n  logout\n}": typeof types.LogoutDocument,
+    "mutation RefreshToken {\n  refresh\n}": typeof types.RefreshTokenDocument,
     "mutation verifyMagicLink($token: String!) {\n  verifyMagicLink(token: $token) {\n    accessToken\n    id\n    email\n    fullName\n    role\n  }\n}": typeof types.VerifyMagicLinkDocument,
     "mutation verifyOtp($input: VerifyOtpInput!) {\n  verifyOtp(input: $input)\n}": typeof types.VerifyOtpDocument,
-    "mutation submitVehicle($input: SubmitVehicleInputType!) {\n  submitVehicle(input: $input) {\n    id\n  }\n}": typeof types.SubmitVehicleDocument,
+    "query GetSingleUserVehicle($vehicleId: String!) {\n  getSingleUserVehicle(vehicleId: $vehicleId) {\n    id\n    status\n    make\n    model\n    year\n    mileage\n    condition\n    drivetrain\n    engineType\n    transmission\n    mechanicalOverhaul\n    structuralDamage\n    serviceHistory\n    tav\n    min\n    max\n    offer\n    imageUrls {\n      imageUrl\n      angle\n    }\n    agentName\n    agentPhone\n    scheduledAt\n    expiresAt\n  }\n}": typeof types.GetSingleUserVehicleDocument,
+    "query GetVehiclesByUser {\n  getVehiclesByUser {\n    id\n    status\n    make\n    model\n    year\n    mileage\n    condition\n    tav\n    min\n    max\n    offer\n    imageUrls {\n      imageUrl\n      angle\n    }\n    scheduledAt\n    expiresAt\n  }\n}": typeof types.GetVehiclesByUserDocument,
+    "mutation SubmitVehicle($input: SubmitVehicleInputType!) {\n  submitVehicle(input: $input) {\n    id\n    status\n    tav\n    min\n    max\n  }\n}": typeof types.SubmitVehicleDocument,
+    "mutation SchedulePickup($input: SchedulePickupInputType!) {\n  schedulePickup(input: $input) {\n    id\n  }\n}": typeof types.SchedulePickupDocument,
 };
 const documents: Documents = {
     "mutation initiateRegistration($input: InitiateRegistrationInput!) {\n  initiateRegistration(input: $input)\n}": types.InitiateRegistrationDocument,
     "mutation login($input: LoginInput!) {\n  login(input: $input) {\n    accessToken\n    id\n    email\n    fullName\n    role\n  }\n}": types.LoginDocument,
     "mutation Logout {\n  logout\n}": types.LogoutDocument,
+    "mutation RefreshToken {\n  refresh\n}": types.RefreshTokenDocument,
     "mutation verifyMagicLink($token: String!) {\n  verifyMagicLink(token: $token) {\n    accessToken\n    id\n    email\n    fullName\n    role\n  }\n}": types.VerifyMagicLinkDocument,
     "mutation verifyOtp($input: VerifyOtpInput!) {\n  verifyOtp(input: $input)\n}": types.VerifyOtpDocument,
-    "mutation submitVehicle($input: SubmitVehicleInputType!) {\n  submitVehicle(input: $input) {\n    id\n  }\n}": types.SubmitVehicleDocument,
+    "query GetSingleUserVehicle($vehicleId: String!) {\n  getSingleUserVehicle(vehicleId: $vehicleId) {\n    id\n    status\n    make\n    model\n    year\n    mileage\n    condition\n    drivetrain\n    engineType\n    transmission\n    mechanicalOverhaul\n    structuralDamage\n    serviceHistory\n    tav\n    min\n    max\n    offer\n    imageUrls {\n      imageUrl\n      angle\n    }\n    agentName\n    agentPhone\n    scheduledAt\n    expiresAt\n  }\n}": types.GetSingleUserVehicleDocument,
+    "query GetVehiclesByUser {\n  getVehiclesByUser {\n    id\n    status\n    make\n    model\n    year\n    mileage\n    condition\n    tav\n    min\n    max\n    offer\n    imageUrls {\n      imageUrl\n      angle\n    }\n    scheduledAt\n    expiresAt\n  }\n}": types.GetVehiclesByUserDocument,
+    "mutation SubmitVehicle($input: SubmitVehicleInputType!) {\n  submitVehicle(input: $input) {\n    id\n    status\n    tav\n    min\n    max\n  }\n}": types.SubmitVehicleDocument,
+    "mutation SchedulePickup($input: SchedulePickupInputType!) {\n  schedulePickup(input: $input) {\n    id\n  }\n}": types.SchedulePickupDocument,
 };
 
 /**
@@ -59,6 +67,10 @@ export function graphql(source: "mutation Logout {\n  logout\n}"): (typeof docum
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
+export function graphql(source: "mutation RefreshToken {\n  refresh\n}"): (typeof documents)["mutation RefreshToken {\n  refresh\n}"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
 export function graphql(source: "mutation verifyMagicLink($token: String!) {\n  verifyMagicLink(token: $token) {\n    accessToken\n    id\n    email\n    fullName\n    role\n  }\n}"): (typeof documents)["mutation verifyMagicLink($token: String!) {\n  verifyMagicLink(token: $token) {\n    accessToken\n    id\n    email\n    fullName\n    role\n  }\n}"];
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
@@ -67,7 +79,19 @@ export function graphql(source: "mutation verifyOtp($input: VerifyOtpInput!) {\n
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
-export function graphql(source: "mutation submitVehicle($input: SubmitVehicleInputType!) {\n  submitVehicle(input: $input) {\n    id\n  }\n}"): (typeof documents)["mutation submitVehicle($input: SubmitVehicleInputType!) {\n  submitVehicle(input: $input) {\n    id\n  }\n}"];
+export function graphql(source: "query GetSingleUserVehicle($vehicleId: String!) {\n  getSingleUserVehicle(vehicleId: $vehicleId) {\n    id\n    status\n    make\n    model\n    year\n    mileage\n    condition\n    drivetrain\n    engineType\n    transmission\n    mechanicalOverhaul\n    structuralDamage\n    serviceHistory\n    tav\n    min\n    max\n    offer\n    imageUrls {\n      imageUrl\n      angle\n    }\n    agentName\n    agentPhone\n    scheduledAt\n    expiresAt\n  }\n}"): (typeof documents)["query GetSingleUserVehicle($vehicleId: String!) {\n  getSingleUserVehicle(vehicleId: $vehicleId) {\n    id\n    status\n    make\n    model\n    year\n    mileage\n    condition\n    drivetrain\n    engineType\n    transmission\n    mechanicalOverhaul\n    structuralDamage\n    serviceHistory\n    tav\n    min\n    max\n    offer\n    imageUrls {\n      imageUrl\n      angle\n    }\n    agentName\n    agentPhone\n    scheduledAt\n    expiresAt\n  }\n}"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "query GetVehiclesByUser {\n  getVehiclesByUser {\n    id\n    status\n    make\n    model\n    year\n    mileage\n    condition\n    tav\n    min\n    max\n    offer\n    imageUrls {\n      imageUrl\n      angle\n    }\n    scheduledAt\n    expiresAt\n  }\n}"): (typeof documents)["query GetVehiclesByUser {\n  getVehiclesByUser {\n    id\n    status\n    make\n    model\n    year\n    mileage\n    condition\n    tav\n    min\n    max\n    offer\n    imageUrls {\n      imageUrl\n      angle\n    }\n    scheduledAt\n    expiresAt\n  }\n}"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "mutation SubmitVehicle($input: SubmitVehicleInputType!) {\n  submitVehicle(input: $input) {\n    id\n    status\n    tav\n    min\n    max\n  }\n}"): (typeof documents)["mutation SubmitVehicle($input: SubmitVehicleInputType!) {\n  submitVehicle(input: $input) {\n    id\n    status\n    tav\n    min\n    max\n  }\n}"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "mutation SchedulePickup($input: SchedulePickupInputType!) {\n  schedulePickup(input: $input) {\n    id\n  }\n}"): (typeof documents)["mutation SchedulePickup($input: SchedulePickupInputType!) {\n  schedulePickup(input: $input) {\n    id\n  }\n}"];
 
 export function graphql(source: string) {
   return (documents as any)[source] ?? {};

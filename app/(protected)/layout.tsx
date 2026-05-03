@@ -6,6 +6,7 @@ import { Home, User, CarFront, ClipboardCheck } from "lucide-react";
 import { BottomNav } from "./components/navigation/BottomNav";
 
 import Link from "next/link";
+import { useNetworkStatus } from "@/shared/hooks/useNetworkStatus";
 
 const NAV_ITEMS = [
   { label: "Home", href: "/home", icon: Home },
@@ -19,6 +20,8 @@ export default function ProtectedLayout({
 }: {
   children: React.ReactNode;
 }) {
+  
+  useNetworkStatus()
   const { user, isLoading, isAuthenticated } = useAuthGuard();
 
   if (isLoading) {

@@ -222,7 +222,7 @@ function VerifyContent() {
         <p className="text-sm text-muted-foreground mt-2 max-w-xs">
           We sent a verification code to{" "}
           <span className="font-medium text-foreground">
-            {tempEmail ?? "your email"}
+            {emailToUse ?? "your email"}
           </span>
           . Enter it below or click the magic link in the email.
         </p>

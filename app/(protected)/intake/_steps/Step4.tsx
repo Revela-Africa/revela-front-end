@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useRef } from "react";
-import { Camera, Upload, XIcon } from "lucide-react";
+import { Camera, XIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { IntakeHeader } from "../_components/IntakeHeader";
 
@@ -169,17 +169,17 @@ export default function IntakeStep4() {
             </div>
 
             {/* Upload from gallery fallback */}
-            <Button
+            {/* <Button
               type="button"
               disabled={allComplete}
               onClick={() => fileInputRef.current?.click()}
-              className="w-full flex normal-case  hover:bg-transparent hover:shadow-none shadow-none items-center justify-center gap-2 p-3 rounded-xl border border-dashed border-border bg-[#FFF9F099] hover:border-[#E8A020]/40 transition-colors font-cabinet"
+              className="w-full flex normal-case hidden  hover:bg-transparent hover:shadow-none shadow-none items-center justify-center gap-2 p-3 rounded-xl border border-dashed border-border bg-[#FFF9F099] hover:border-[#E8A020]/40 transition-colors font-cabinet"
             >
               <Upload size={16} className="text-[#E8A020]" />
               <span className="text-sm font-medium text-foreground">
                 Upload from Gallery instead
               </span>
-            </Button>
+            </Button> */}
 
             <input
               ref={fileInputRef}
@@ -201,6 +201,7 @@ export default function IntakeStep4() {
               onClick={onSubmit}
               disabled={isLoading || !allComplete}
               className="w-full text-white"
+              loading ={isLoading}
             >
               Done: Start Analysis
             </Button>

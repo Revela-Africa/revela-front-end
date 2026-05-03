@@ -1,0 +1,29 @@
+query GetSingleUserVehicle($vehicleId: String!) {
+  getSingleUserVehicle(vehicleId: $vehicleId) {
+    id
+    status
+    make
+    model
+    year
+    mileage
+    condition
+    drivetrain
+    engineType
+    transmission
+    mechanicalOverhaul
+    structuralDamage
+    serviceHistory
+    tav
+    min
+    max
+    offer
+    imageUrls {
+      imageUrl
+      angle
+    }
+    agentName
+    agentPhone
+    scheduledAt
+    expiresAt
+  }
+}

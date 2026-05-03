@@ -1,4 +1,5 @@
-import { checkIsAuthenticated, getUser, type StoredUser } from "@/lib/auth/token"
+import { getUser, type StoredUser } from "@/lib/auth/token"
+import { refreshToken } from "@/lib/auth/refresh"
 import { useRouter } from "next/navigation"
 import { useEffect, useState } from "react"
 
@@ -15,20 +16,20 @@ export function useAuthGuard(): AuthGuardResult {
   const [authenticated, setAuthenticated] = useState(false)
 
   useEffect(() => {
-    async function check() {
-      const auth = await checkIsAuthenticated()
-      const storedUser = getUser() // reads revela_user (not httpOnly)
+    const storedUser = getUser()
+    const auth = !!storedUser
 
-      setAuthenticated(auth)
-      setUser(storedUser)
-      setIsLoading(false)
+    setAuthenticated(auth)
+    setUser(storedUser)
+    setIsLoading(false)
 
-      if (!auth) {
-        router.replace("/login")
-      }
+    if (!auth) {
+      router.replace("/login")
+      return
     }
-
-    check()
+    // refreshToken()
+    const interval = setInterval(() => refreshToken(), 10 * 60 * 1000)
+    return () => clearInterval(interval)
   }, [router])
 
   return { isAuthenticated: authenticated, isLoading, user }

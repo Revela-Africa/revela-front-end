@@ -24,10 +24,15 @@ export type PhotoAngle = (typeof REQUIRED_ANGLES)[number];
 
 export function useIntakeStep4() {
   const router = useRouter();
-  const { data, photos, setPhotoAtIndex, removePhoto, reset } =
-    useIntakeStore();
-  const [isLoading, setIsLoading] = useState(false); // ← own state
-  const [submitVehicle, { loading }] = useMutation(SubmitVehicleDocument);
+  const {
+    data: intakeData,
+    photos,
+    setPhotoAtIndex,
+    removePhoto,
+    reset,
+  } = useIntakeStore();
+  const [isLoading, setIsLoading] = useState(false); 
+  const [submitVehicle] = useMutation(SubmitVehicleDocument);
 
   const form = useForm<IntakeStep4Values>({
     resolver: zodResolver(intakeStep4Schema),
@@ -38,7 +43,7 @@ export function useIntakeStep4() {
     for (let i = 0; i < REQUIRED_ANGLES.length; i++) {
       if (!photos[i]) return i;
     }
-    return -1; // all slots filled
+    return -1;
   }
 
   function addPhotoHandler(file: File, index: number) {
@@ -48,7 +53,6 @@ export function useIntakeStep4() {
     form.setValue("photos", current, { shouldValidate: true });
   }
 
-  // All 5 slots must be filled
   const allComplete = photos.filter(Boolean).length === REQUIRED_ANGLES.length;
   const completedCount = photos.filter(Boolean).length;
 
@@ -59,55 +63,65 @@ export function useIntakeStep4() {
     form.setValue("photos", current.filter(Boolean), { shouldValidate: true });
   }
 
-  async function onSubmit() {
-    if (!allComplete) return; // ← guard against partial submission
-    setIsLoading(true);
+async function onSubmit() {
+  if (!allComplete) return
+  setIsLoading(true)
 
-    try {
-      const uploadResults = await Promise.all(
-        photos
-          .filter(Boolean)
-          .map((file) => uploadImage(file, "revela/vehicles")),
-      );
+  try {    
+    // Step 1 — upload photos
+    const uploadResults = await Promise.all(
+      photos
+        .filter(Boolean)
+        .map((file) => uploadImage(file, "revela/vehicles")),
+    )
 
-      const imageUrls = uploadResults.map((result, index) => ({
-        imageUrl: result.url,
-        angle: REQUIRED_ANGLES[index]?.id ?? `photo_${index}`,
-      }));
+    const imageUrls = uploadResults.map((result, index) => ({
+      imageUrl: result.url,
+      angle: REQUIRED_ANGLES[index]?.id ?? `photo_${index}`,
+    }))
 
-      await submitVehicle({
-        variables: {
-          input: {
-            vin: data.vin,
-            make: data.make!,
-            model: data.model,
-            year: data.year!,
-            mileage: data.mileage!,
-            condition: data.condition!,
-            engineType: data.engineType!,
-            transmission: data.transmission!,
-            drivetrain: data.drivetrain!,
-            structuralDamage: data.structuralDamage!,
-            mechanicalOverhaul: data.mechanicalOverhaul!,
-            serviceHistory: data.serviceHistory!,
-            imageUrls: imageUrls,
-          },
+
+    const { data } = await submitVehicle({
+      variables: {
+        input: {
+          vin: intakeData.vin ?? undefined,
+          make: intakeData.make!,
+          model: intakeData.model ?? undefined,
+          year: intakeData.year!,
+          mileage: intakeData.mileage!,
+          condition: intakeData.condition!,
+          drivetrain: intakeData.drivetrain!,
+          engineType: intakeData.engineType!,
+          transmission: intakeData.transmission!,
+          mechanicalOverhaul: intakeData.mechanicalOverhaul!,
+          structuralDamage: intakeData.structuralDamage!,
+          serviceHistory: intakeData.serviceHistory!,
+          imageUrls,
         },
-      });
+      },
+    })
 
-      appToast.success({
-        title: "Vehicle submitted",
-        description: "We’re analyzing your vehicle now.",
-      });
+    console.log("[Submit] Response:", data)
 
-      reset();
-      router.push("/home");
-    } catch (error:any) {
-      console.error("Upload failed");
-    } finally {
-      setIsLoading(false);
+    if (data?.submitVehicle) {
+      const vehicleId = data.submitVehicle.id
+      router.push(`/intake/processing/${vehicleId}`)
+      reset()
     }
+  } catch (err: any) {
+    const message =
+      err?.graphQLErrors?.[0]?.message ??
+      err?.message ??
+      "Submission failed. Please try again."
+    appToast.error({
+      title: "Oops Something went wrong!",
+      description: message,
+    })
+    console.error("[Submit] Error:", message)
+  } finally {
+    setIsLoading(false)
   }
+}
 
   function goBack() {
     useIntakeStore.getState().setStep(3);

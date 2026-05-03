@@ -55,26 +55,15 @@ export type LoginResponse = {
 
 export type Mutation = {
   __typename?: 'Mutation';
-  acceptOffer: VehicleType;
   initiateRegistration: Scalars['String']['output'];
   login: LoginResponse;
   logout: Scalars['Boolean']['output'];
-  markAsPaid: VehicleType;
-  provideRange: VehicleType;
   refresh: Scalars['String']['output'];
-  requestAuthority: VehicleType;
-  scheduleInspection: VehicleType;
-  sendOffer: VehicleType;
+  schedulePickup: VehicleType;
   startAssessment: VehicleType;
   submitVehicle: VehicleType;
-  verifyAuthority: VehicleType;
   verifyMagicLink: LoginResponse;
   verifyOtp: Scalars['String']['output'];
-};
-
-
-export type MutationAcceptOfferArgs = {
-  id: Scalars['String']['input'];
 };
 
 
@@ -88,35 +77,8 @@ export type MutationLoginArgs = {
 };
 
 
-export type MutationMarkAsPaidArgs = {
-  id: Scalars['String']['input'];
-};
-
-
-export type MutationProvideRangeArgs = {
-  id: Scalars['String']['input'];
-  tav: Scalars['Float']['input'];
-};
-
-
-export type MutationRequestAuthorityArgs = {
-  agentName: Scalars['String']['input'];
-  agentPhone: Scalars['String']['input'];
-  id: Scalars['String']['input'];
-};
-
-
-export type MutationScheduleInspectionArgs = {
-  id: Scalars['String']['input'];
-  scheduledAt: Scalars['String']['input'];
-};
-
-
-export type MutationSendOfferArgs = {
-  expiresAt: Scalars['String']['input'];
-  id: Scalars['String']['input'];
-  offerAmount: Scalars['Float']['input'];
-  scheduledAt: Scalars['String']['input'];
+export type MutationSchedulePickupArgs = {
+  input: SchedulePickupInputType;
 };
 
 
@@ -127,11 +89,6 @@ export type MutationStartAssessmentArgs = {
 
 export type MutationSubmitVehicleArgs = {
   input: SubmitVehicleInputType;
-};
-
-
-export type MutationVerifyAuthorityArgs = {
-  id: Scalars['String']['input'];
 };
 
 
@@ -146,7 +103,22 @@ export type MutationVerifyOtpArgs = {
 
 export type Query = {
   __typename?: 'Query';
-  ping: Scalars['String']['output'];
+  getSingleUserVehicle: VehicleType;
+  getVehiclesByUser: Array<VehicleType>;
+};
+
+
+export type QueryGetSingleUserVehicleArgs = {
+  vehicleId: Scalars['String']['input'];
+};
+
+export type SchedulePickupInputType = {
+  accountNumber: Scalars['String']['input'];
+  bankName: Scalars['String']['input'];
+  collectionAddress: Scalars['String']['input'];
+  collectionDate: Scalars['String']['input'];
+  timeSlot: Scalars['String']['input'];
+  vehicleId: Scalars['String']['input'];
 };
 
 export type SubmitVehicleInputType = {
@@ -167,8 +139,13 @@ export type SubmitVehicleInputType = {
 
 export type VehicleType = {
   __typename?: 'VehicleType';
+  accountNumber?: Maybe<Scalars['String']['output']>;
   agentName?: Maybe<Scalars['String']['output']>;
   agentPhone?: Maybe<Scalars['String']['output']>;
+  bankName?: Maybe<Scalars['String']['output']>;
+  bookingReference?: Maybe<Scalars['String']['output']>;
+  collectionAddress?: Maybe<Scalars['String']['output']>;
+  collectionDate?: Maybe<Scalars['String']['output']>;
   condition: Scalars['String']['output'];
   drivetrain: Scalars['String']['output'];
   engineType: Scalars['String']['output'];
@@ -187,6 +164,7 @@ export type VehicleType = {
   status: Scalars['String']['output'];
   structuralDamage: Scalars['Boolean']['output'];
   tav?: Maybe<Scalars['Float']['output']>;
+  timeSlot?: Maybe<Scalars['String']['output']>;
   transmission: Scalars['String']['output'];
   userId: Scalars['String']['output'];
   vin?: Maybe<Scalars['String']['output']>;
@@ -217,6 +195,11 @@ export type LogoutMutationVariables = Exact<{ [key: string]: never; }>;
 
 export type LogoutMutation = { __typename?: 'Mutation', logout: boolean };
 
+export type RefreshTokenMutationVariables = Exact<{ [key: string]: never; }>;
+
+
+export type RefreshTokenMutation = { __typename?: 'Mutation', refresh: string };
+
 export type VerifyMagicLinkMutationVariables = Exact<{
   token: Scalars['String']['input'];
 }>;
@@ -231,17 +214,40 @@ export type VerifyOtpMutationVariables = Exact<{
 
 export type VerifyOtpMutation = { __typename?: 'Mutation', verifyOtp: string };
 
+export type GetSingleUserVehicleQueryVariables = Exact<{
+  vehicleId: Scalars['String']['input'];
+}>;
+
+
+export type GetSingleUserVehicleQuery = { __typename?: 'Query', getSingleUserVehicle: { __typename?: 'VehicleType', id: string, status: string, make: string, model?: string | null, year: number, mileage: number, condition: string, drivetrain: string, engineType: string, transmission: string, mechanicalOverhaul: boolean, structuralDamage: boolean, serviceHistory: string, tav?: number | null, min?: number | null, max?: number | null, offer?: number | null, agentName?: string | null, agentPhone?: string | null, scheduledAt?: string | null, expiresAt?: string | null, imageUrls: Array<{ __typename?: 'ImageUrlType', imageUrl: string, angle: string }> } };
+
+export type GetVehiclesByUserQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetVehiclesByUserQuery = { __typename?: 'Query', getVehiclesByUser: Array<{ __typename?: 'VehicleType', id: string, status: string, make: string, model?: string | null, year: number, mileage: number, condition: string, tav?: number | null, min?: number | null, max?: number | null, offer?: number | null, scheduledAt?: string | null, expiresAt?: string | null, imageUrls: Array<{ __typename?: 'ImageUrlType', imageUrl: string, angle: string }> }> };
+
 export type SubmitVehicleMutationVariables = Exact<{
   input: SubmitVehicleInputType;
 }>;
 
 
-export type SubmitVehicleMutation = { __typename?: 'Mutation', submitVehicle: { __typename?: 'VehicleType', id: string } };
+export type SubmitVehicleMutation = { __typename?: 'Mutation', submitVehicle: { __typename?: 'VehicleType', id: string, status: string, tav?: number | null, min?: number | null, max?: number | null } };
+
+export type SchedulePickupMutationVariables = Exact<{
+  input: SchedulePickupInputType;
+}>;
+
+
+export type SchedulePickupMutation = { __typename?: 'Mutation', schedulePickup: { __typename?: 'VehicleType', id: string } };
 
 
 export const InitiateRegistrationDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"initiateRegistration"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"input"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"InitiateRegistrationInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"initiateRegistration"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"input"},"value":{"kind":"Variable","name":{"kind":"Name","value":"input"}}}]}]}}]} as unknown as DocumentNode<InitiateRegistrationMutation, InitiateRegistrationMutationVariables>;
 export const LoginDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"login"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"input"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"LoginInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"login"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"input"},"value":{"kind":"Variable","name":{"kind":"Name","value":"input"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"accessToken"}},{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"email"}},{"kind":"Field","name":{"kind":"Name","value":"fullName"}},{"kind":"Field","name":{"kind":"Name","value":"role"}}]}}]}}]} as unknown as DocumentNode<LoginMutation, LoginMutationVariables>;
 export const LogoutDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"Logout"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"logout"}}]}}]} as unknown as DocumentNode<LogoutMutation, LogoutMutationVariables>;
+export const RefreshTokenDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"RefreshToken"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"refresh"}}]}}]} as unknown as DocumentNode<RefreshTokenMutation, RefreshTokenMutationVariables>;
 export const VerifyMagicLinkDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"verifyMagicLink"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"token"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"verifyMagicLink"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"token"},"value":{"kind":"Variable","name":{"kind":"Name","value":"token"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"accessToken"}},{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"email"}},{"kind":"Field","name":{"kind":"Name","value":"fullName"}},{"kind":"Field","name":{"kind":"Name","value":"role"}}]}}]}}]} as unknown as DocumentNode<VerifyMagicLinkMutation, VerifyMagicLinkMutationVariables>;
 export const VerifyOtpDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"verifyOtp"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"input"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"VerifyOtpInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"verifyOtp"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"input"},"value":{"kind":"Variable","name":{"kind":"Name","value":"input"}}}]}]}}]} as unknown as DocumentNode<VerifyOtpMutation, VerifyOtpMutationVariables>;
-export const SubmitVehicleDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"submitVehicle"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"input"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"SubmitVehicleInputType"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"submitVehicle"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"input"},"value":{"kind":"Variable","name":{"kind":"Name","value":"input"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}}]}}]}}]} as unknown as DocumentNode<SubmitVehicleMutation, SubmitVehicleMutationVariables>;
+export const GetSingleUserVehicleDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"GetSingleUserVehicle"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"vehicleId"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"getSingleUserVehicle"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"vehicleId"},"value":{"kind":"Variable","name":{"kind":"Name","value":"vehicleId"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"status"}},{"kind":"Field","name":{"kind":"Name","value":"make"}},{"kind":"Field","name":{"kind":"Name","value":"model"}},{"kind":"Field","name":{"kind":"Name","value":"year"}},{"kind":"Field","name":{"kind":"Name","value":"mileage"}},{"kind":"Field","name":{"kind":"Name","value":"condition"}},{"kind":"Field","name":{"kind":"Name","value":"drivetrain"}},{"kind":"Field","name":{"kind":"Name","value":"engineType"}},{"kind":"Field","name":{"kind":"Name","value":"transmission"}},{"kind":"Field","name":{"kind":"Name","value":"mechanicalOverhaul"}},{"kind":"Field","name":{"kind":"Name","value":"structuralDamage"}},{"kind":"Field","name":{"kind":"Name","value":"serviceHistory"}},{"kind":"Field","name":{"kind":"Name","value":"tav"}},{"kind":"Field","name":{"kind":"Name","value":"min"}},{"kind":"Field","name":{"kind":"Name","value":"max"}},{"kind":"Field","name":{"kind":"Name","value":"offer"}},{"kind":"Field","name":{"kind":"Name","value":"imageUrls"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"imageUrl"}},{"kind":"Field","name":{"kind":"Name","value":"angle"}}]}},{"kind":"Field","name":{"kind":"Name","value":"agentName"}},{"kind":"Field","name":{"kind":"Name","value":"agentPhone"}},{"kind":"Field","name":{"kind":"Name","value":"scheduledAt"}},{"kind":"Field","name":{"kind":"Name","value":"expiresAt"}}]}}]}}]} as unknown as DocumentNode<GetSingleUserVehicleQuery, GetSingleUserVehicleQueryVariables>;
+export const GetVehiclesByUserDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"GetVehiclesByUser"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"getVehiclesByUser"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"status"}},{"kind":"Field","name":{"kind":"Name","value":"make"}},{"kind":"Field","name":{"kind":"Name","value":"model"}},{"kind":"Field","name":{"kind":"Name","value":"year"}},{"kind":"Field","name":{"kind":"Name","value":"mileage"}},{"kind":"Field","name":{"kind":"Name","value":"condition"}},{"kind":"Field","name":{"kind":"Name","value":"tav"}},{"kind":"Field","name":{"kind":"Name","value":"min"}},{"kind":"Field","name":{"kind":"Name","value":"max"}},{"kind":"Field","name":{"kind":"Name","value":"offer"}},{"kind":"Field","name":{"kind":"Name","value":"imageUrls"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"imageUrl"}},{"kind":"Field","name":{"kind":"Name","value":"angle"}}]}},{"kind":"Field","name":{"kind":"Name","value":"scheduledAt"}},{"kind":"Field","name":{"kind":"Name","value":"expiresAt"}}]}}]}}]} as unknown as DocumentNode<GetVehiclesByUserQuery, GetVehiclesByUserQueryVariables>;
+export const SubmitVehicleDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"SubmitVehicle"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"input"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"SubmitVehicleInputType"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"submitVehicle"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"input"},"value":{"kind":"Variable","name":{"kind":"Name","value":"input"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"status"}},{"kind":"Field","name":{"kind":"Name","value":"tav"}},{"kind":"Field","name":{"kind":"Name","value":"min"}},{"kind":"Field","name":{"kind":"Name","value":"max"}}]}}]}}]} as unknown as DocumentNode<SubmitVehicleMutation, SubmitVehicleMutationVariables>;
+export const SchedulePickupDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"SchedulePickup"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"input"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"SchedulePickupInputType"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"schedulePickup"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"input"},"value":{"kind":"Variable","name":{"kind":"Name","value":"input"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}}]}}]}}]} as unknown as DocumentNode<SchedulePickupMutation, SchedulePickupMutationVariables>;
