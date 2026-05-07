@@ -15,6 +15,7 @@ export default function BankStep() {
     handleAccountNumberChange,
     handleBankChange,
   } = useBankDetails();
+  
   const {
     register,
     control,

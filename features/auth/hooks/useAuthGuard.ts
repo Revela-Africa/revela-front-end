@@ -9,28 +9,76 @@ type AuthGuardResult = {
   user: StoredUser | null
 }
 
+// export function useAuthGuard(): AuthGuardResult {
+//   const router = useRouter()
+//   const [isLoading, setIsLoading] = useState(true)
+//   const [user, setUser] = useState<StoredUser | null>(null)
+//   const [authenticated, setAuthenticated] = useState(false)
+
+//   useEffect(() => {
+//     const storedUser = getUser()
+//     const auth = !!storedUser
+
+//     setAuthenticated(auth)
+//     setUser(storedUser)
+//     setIsLoading(false)
+
+//     if (!auth) {
+//       router.replace("/login")
+//       return
+//     }
+//     // refreshToken()
+//     const interval = setInterval(() => refreshToken(), 10 * 60 * 1000)
+//     return () => clearInterval(interval)
+//   }, [router])
+
+//   return { isAuthenticated: authenticated, isLoading, user }
+// }
+
+
 export function useAuthGuard(): AuthGuardResult {
+
   const router = useRouter()
   const [isLoading, setIsLoading] = useState(true)
   const [user, setUser] = useState<StoredUser | null>(null)
   const [authenticated, setAuthenticated] = useState(false)
 
   useEffect(() => {
-    const storedUser = getUser()
-    const auth = !!storedUser
+    let mounted = true
 
-    setAuthenticated(auth)
-    setUser(storedUser)
-    setIsLoading(false)
+    async function init() {
+      const storedUser = getUser()
+      const auth = !!storedUser
 
-    if (!auth) {
-      router.replace("/login")
-      return
+      if (!auth) {
+        router.replace("/login")
+        return
+      }
+
+      setUser(storedUser)
+      setAuthenticated(true)
+
+      await refreshToken() 
+
+      if (mounted) setIsLoading(false)
     }
-    // refreshToken()
-    const interval = setInterval(() => refreshToken(), 10 * 60 * 1000)
-    return () => clearInterval(interval)
+
+    init()
+
+    return () => {
+      mounted = false
+    }
   }, [router])
+
+  useEffect(() => {
+    if (!authenticated) return
+
+    const interval = setInterval(async () => {
+      await refreshToken()
+    }, 9 * 60 * 1000)
+
+    return () => clearInterval(interval)
+  }, [authenticated])
 
   return { isAuthenticated: authenticated, isLoading, user }
 }

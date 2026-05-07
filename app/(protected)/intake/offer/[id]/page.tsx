@@ -75,7 +75,7 @@ useEffect(() => {
 
   const tav = vehicle.tav
 
-  // ── Populate images ───────────────────────────────────
+  
   setImageUrls(
     (vehicle.imageUrls ?? []).map((img) => ({
       imageUrl: img.imageUrl,
@@ -83,7 +83,6 @@ useEffect(() => {
     }))
   )
 
-  // ── Populate vehicle state ────────────────────────────
   setVehicleData({
     vehicleId: vehicle.id,
     make: vehicle.make,
@@ -91,11 +90,7 @@ useEffect(() => {
     year: String(vehicle.year),
     mileage: String(vehicle.mileage),
     condition: vehicle.condition,
-
-    // Use ONLY backend-provided TAV
     tav,
-
-    // Fallbacks still valid for min/max if backend hasn’t set them
     min: vehicle.min ?? Math.round(tav * 0.7),
     max: vehicle.max ?? Math.round(tav * 1.05),
   })

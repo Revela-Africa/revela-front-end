@@ -16,6 +16,8 @@ export default function page() {
 
   const vehicles = data?.getVehiclesByUser ?? [];
 
+
+  
   if (loading && !data) {
     return (
       <div className="min-h-[60vh] flex items-center justify-center">

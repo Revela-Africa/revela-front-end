@@ -24,6 +24,7 @@ export default function ScheduleStep() {
     setTimeSlot,
     collectionAddress,
     collectionDate,
+    region,
     timeSlot,
     vehicleId,
     bankName,
@@ -45,11 +46,12 @@ export default function ScheduleStep() {
       bankName,
       accountNumber,
       collectionDate,
+      region,
       timeSlot,
       collectionAddress,
     };
 
-    console.log("[SchedulePickup] Payload:", payload);
+    // console.log("[SchedulePickup] Payload:", payload);
 
     try {
       const { data } = await schedulePickup({

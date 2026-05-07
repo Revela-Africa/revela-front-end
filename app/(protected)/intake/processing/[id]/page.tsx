@@ -97,34 +97,7 @@ export default function ProcessingPage() {
     }
   }, [vehicle])
 
-  // ── Effect 2 — Stub: fake TAV for testing ──────────────
-  // REMOVE THIS BLOCK when AI + admin confirmation is ready
-  // useEffect(() => {
-  //   if (!vehicle || hasNavigated.current) return
 
-  //   // Don't fake if real TAV already confirmed
-  //   if (vehicle.status === "RANGE_CONFIRMED") return
-
-  //   fakeTimerRef.current = setTimeout(() => {
-  //     if (hasNavigated.current) return
-
-  //     const condition = vehicle.condition ?? "FAIR"
-  //     const year = String(vehicle.year ?? 2015)
-  //     const fakeTav = generateFakeTAV(condition, year)
-
-  //     populateAndNavigate(
-  //       fakeTav,
-  //       Math.round(fakeTav * 0.7),
-  //       Math.round(fakeTav * 1.05),
-  //     )
-  //   }, 7000)
-
-  //   return () => {
-  //     if (fakeTimerRef.current) {
-  //       clearTimeout(fakeTimerRef.current)
-  //     }
-  //   }
-  // }, [vehicle])
 
   // ── Error state ────────────────────────────────────────
   if (vehicleError) {

@@ -1,0 +1,10 @@
+query GetAllInspectors {
+  getAllInspectors {
+    id
+    fullName
+    phone
+    email
+    region
+    isAvailable
+  }
+}

@@ -20,7 +20,7 @@ type Vehicle = {
 const STATUS_MAP: Record<string, { label: string; style: string }> = {
   SUBMITTED: {
     label: "Processing",
-    style: "text-blue-600",
+    style: "text-[#D4900A]",
   },
   RANGE_PROVIDED: {
     label: "Valuation Ready",
@@ -28,7 +28,7 @@ const STATUS_MAP: Record<string, { label: string; style: string }> = {
   },
   INSPECTION_SCHEDULED: {
     label: "Pickup Scheduled",
-    style: "text-purple-600",
+    style: "text-[#D4900A]",
   },
   UNDER_ASSESSMENT: {
     label: "Being Inspected",

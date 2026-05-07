@@ -1,0 +1,8 @@
+mutation AssignInspector($vehicleId: String!, $inspectorId: String!) {
+  assignInspector(vehicleId: $vehicleId, inspectorId: $inspectorId) {
+    id
+    status
+    agentName
+    agentPhone
+  }
+}
