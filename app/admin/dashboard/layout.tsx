@@ -15,7 +15,7 @@ export default function dashboardLayout({
     <div className="flex h-screen sbg-[#F7F2EB] overflow-hidden font-cabinet ">
       <Sidebar />
       <MainContent>
-        <main className="flex-1 overflow-y-auto p-6">{children}</main>
+        <main className="flex-1 overflow-y-auto">{children}</main>
       </MainContent>
     </div>
   );

@@ -1,0 +1,7 @@
+query GetUserDashboard {
+  getUserDashboard {
+    totalVehicles
+    activeVehicles
+    totalPayout
+  }
+}

@@ -1,0 +1,14 @@
+mutation StartAssessment(
+  $vehicleId: String!
+  $notes: String!
+  $photoUrls: [String!]!
+) {
+  startAssessment(
+    vehicleId: $vehicleId
+    notes: $notes
+    photoUrls: $photoUrls
+  ) {
+    id
+    status
+  }
+}

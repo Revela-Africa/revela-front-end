@@ -58,11 +58,11 @@ export default function AdminProfilePage() {
         </div>
       </div>
 
-      <div className="grid grid-cols-1 gap-6 xl:grid-cols-12">
+      <div className="grid grid-cols-1 gap-3 xl:grid-cols-12">
         {/* Left Column - Profile & Stats */}
-        <div className="space-y-6 xl:col-span-8">
+        <div className="space-y-3 xl:col-span-8">
           {/* Profile Hero Card */}
-          <div className="rounded-3xl border border-[#E7E1D8] bg-white p-6 shadow-sm lg:p-8">
+          <div className="rounded-3xl border border-[#E7E1D8] bg-white p-6  lg:p-8">
             <div className="flex flex-col gap-6 sm:flex-row sm:items-center">
               <div className="relative">
                 <img
@@ -99,19 +99,12 @@ export default function AdminProfilePage() {
                 </div>
               </div>
 
-              <Button
-                
-                className="h-11 rounded-2xl border-[#E7E1D8] bg-[#F7F2EB] text-[#171D17] hover:bg-[#E7E1D8] sm:self-start"
-              >
-                <Settings size={16} className="mr-2" />
-                Edit Profile
-              </Button>
             </div>
           </div>
 
           {/* Stats Grid */}
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
-            <div className="rounded-3xl border border-[#E7E1D8] bg-white p-5 shadow-sm">
+            <div className="rounded-3xl border border-[#E7E1D8] bg-white p-5 ">
               <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-[#FFF7E4]">
                 <Users size={20} className="text-[#E8A020]" />
               </div>
@@ -123,7 +116,7 @@ export default function AdminProfilePage() {
               </div>
             </div>
 
-            <div className="rounded-3xl border border-[#E7E1D8] bg-white p-5 shadow-sm">
+            <div className="rounded-3xl border border-[#E7E1D8] bg-white p-5 ">
               <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-[#FFF7E4]">
                 <Shield size={20} className="text-[#E8A020]" />
               </div>
@@ -134,7 +127,7 @@ export default function AdminProfilePage() {
               </div>
             </div>
 
-            <div className="rounded-3xl border border-[#E7E1D8] bg-white p-5 shadow-sm">
+            <div className="rounded-3xl border border-[#E7E1D8] bg-white p-5 ">
               <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-[#FFF7E4]">
                 <Activity size={20} className="text-[#E8A020]" />
               </div>
@@ -148,7 +141,7 @@ export default function AdminProfilePage() {
           </div>
 
           {/* Permissions & Security */}
-          <div className="rounded-3xl border border-[#E7E1D8] bg-white p-6 shadow-sm lg:p-8">
+          {/* <div className="rounded-3xl border border-[#E7E1D8] bg-white p-6  lg:p-8">
             <div className="mb-6 flex items-center justify-between">
               <div>
                 <p className="text-xs font-semibold uppercase tracking-[0.2em] text-[#6A6A6A]">
@@ -195,10 +188,10 @@ export default function AdminProfilePage() {
                 </div>
               ))}
             </div>
-          </div>
+          </div> */}
 
           {/* Recent Activity */}
-          <div className="rounded-3xl border border-[#E7E1D8] bg-white p-6 shadow-sm lg:p-8">
+          <div className="rounded-3xl border border-[#E7E1D8] bg-white p-6  lg:p-8">
             <div className="mb-6 flex items-center justify-between">
               <div>
                 <p className="text-xs font-semibold uppercase tracking-[0.2em] text-[#6A6A6A]">
@@ -249,9 +242,9 @@ export default function AdminProfilePage() {
         </div>
 
         {/* Right Column - Sidebar Actions */}
-        <div className="space-y-6 xl:col-span-4">
+        <div className="space-y-3 xl:col-span-4">
           {/* Quick Actions */}
-          <div className="rounded-3xl border border-[#E7E1D8] bg-white p-6 shadow-sm">
+          <div className="rounded-3xl border border-[#E7E1D8] bg-white p-6 ">
             <p className="text-xs font-semibold uppercase tracking-[0.2em] text-[#6A6A6A]">
               Quick Actions
             </p>
@@ -282,7 +275,7 @@ export default function AdminProfilePage() {
           </div>
 
           {/* Account Details */}
-          <div className="rounded-3xl border border-[#E7E1D8] bg-white p-6 shadow-sm">
+          <div className="rounded-3xl border border-[#E7E1D8] bg-white p-6 ">
             <p className="text-xs font-semibold uppercase tracking-[0.2em] text-[#6A6A6A]">
               Account Info
             </p>
@@ -338,7 +331,7 @@ export default function AdminProfilePage() {
           </div>
 
           {/* Danger Zone */}
-          <div className="rounded-3xl border border-red-100 bg-white p-6 shadow-sm">
+          <div className="rounded-3xl border border-red-100 bg-white p-6 ">
             <div className="flex items-center gap-2">
               <AlertTriangle size={16} className="text-red-500" />
               <p className="text-xs font-semibold uppercase tracking-[0.2em] text-red-500">
@@ -347,13 +340,6 @@ export default function AdminProfilePage() {
             </div>
 
             <div className="mt-4 space-y-3">
-              <Button
-                
-                className="h-11 w-full rounded-2xl border-red-200 text-sm font-semibold text-red-600 hover:bg-red-50 hover:text-red-700"
-              >
-                Deactivate Account
-              </Button>
-
               <Button
                 type="button"
                 onClick={logout}

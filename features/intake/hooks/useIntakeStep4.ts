@@ -105,7 +105,7 @@ async function onSubmit() {
 
     if (data?.submitVehicle) {
       const vehicleId = data.submitVehicle.id
-      router.push(`/intake/processing/${vehicleId}`)
+      router.replace(`/intake/processing/${vehicleId}`)
       reset()
     }
   } catch (err: any) {

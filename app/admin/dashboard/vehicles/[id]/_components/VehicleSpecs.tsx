@@ -1,17 +1,12 @@
+import { VehicleType } from "@/graphql/generated/graphql";
+
 interface Props {
-  vehicle: {
-    year: number
-    mileage: number
-    engineType?: string | null
-    transmission?: string | null
-    condition?: string | null
-    region?: string | null
-    scheduledAt?: string | null
-    agentName?: string | null
-  }
+  vehicle: VehicleType
 }
 
 export function VehicleSpecs({ vehicle }: Props) {
+
+  
   const specs = [
     { label: "Year", value: vehicle.year },
     {
@@ -24,16 +19,16 @@ export function VehicleSpecs({ vehicle }: Props) {
     { label: "Region", value: vehicle.region ?? "—" },
     {
       label: "Scheduled",
-      value: vehicle.scheduledAt
-        ? new Date(vehicle.scheduledAt).toLocaleDateString("en-GB", {
+      value: vehicle.collectionDate
+        ? new Date(vehicle.collectionDate).toLocaleDateString("en-GB", {
             day: "numeric",
             month: "short",
             year: "numeric",
           })
         : "—",
     },
-    { label: "Inspector", value: vehicle.agentName ?? "Unassigned" },
-  ]
+    { label: "Inspector", value: vehicle.assignedToInspector ? "Assigned": "Unassigned" },
+  ];
 
   return (
     <div className="grid grid-cols-2 xl:grid-cols-4 gap-x-4 gap-y-3 mt-4">
@@ -48,5 +43,5 @@ export function VehicleSpecs({ vehicle }: Props) {
         </div>
       ))}
     </div>
-  )
+  );
 }

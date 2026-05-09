@@ -1,38 +1,28 @@
-"use client"
+"use client";
 
-import { useParams, useRouter } from "next/navigation"
-import { useState } from "react"
-import { ArrowLeft, Share2, Loader2 } from "lucide-react"
-import { useAdminVehicleDetail } from "@/features/admin/hooks/useAdminVehicleDetail"
-import { VehicleSpecs } from "./_components/VehicleSpecs"
-import { PhotoStrip } from "./_components/PhotoStrip"
-import { TAVBreakdown } from "./_components/TAVBreakdown"
-import { AgentAssignment } from "./_components/AgentAssignment"
+import { useParams, useRouter } from "next/navigation";
+import { useState } from "react";
+import { ArrowLeft, Share2, Loader2 } from "lucide-react";
+import { useAdminVehicleDetail } from "@/features/admin/hooks/useAdminVehicleDetail";
+import { VehicleSpecs } from "./_components/VehicleSpecs";
+import { PhotoStrip } from "./_components/PhotoStrip";
+import { TAVBreakdown } from "./_components/TAVBreakdown";
+import { AgentAssignment } from "./_components/AgentAssignment";
 
-import { useMutation } from "@apollo/client/react"
+import { useMutation } from "@apollo/client/react";
 // import { SendOfferDocument, MarkAsPaidDocument } from "@/graphql/generated/graphql"
-import { appToast } from "@/lib/toast"
-import { StatusFlow } from "../_components/StatusFlow"
-import { ActivityLog } from "../_components/ActivityLog"
-
-
-
-const STATUS_STYLES: Record<string, string> = {
-  SUBMITTED: "bg-orange-50 text-orange-600 border-orange-200",
-  RANGE_PROVIDED: "bg-yellow-50 text-yellow-700 border-yellow-200",
-  INSPECTION_SCHEDULED: "bg-blue-50 text-blue-600 border-blue-200",
-  UNDER_ASSESSMENT: "bg-purple-50 text-purple-600 border-purple-200",
-  OFFER_SENT: "bg-yellow-50 text-yellow-700 border-yellow-200",
-  ACCEPTED: "bg-green-50 text-green-700 border-green-200",
-  PAID: "bg-green-100 text-green-800 border-green-300",
-}
+import { appToast } from "@/lib/toast";
+import { StatusFlow } from "../_components/StatusFlow";
+import { ActivityLog } from "../_components/ActivityLog";
+import { STATUS_STYLES } from "@/shared/constants/status-styles";
+import { PendingReviewPanel } from "./_components/PendingReviewPanel";
 
 export default function VehicleDetailPage() {
-  const { id } = useParams<{ id: string }>()
-  const router = useRouter()
+  const { id } = useParams<{ id: string }>();
+  const router = useRouter();
 
-  const [offerAmount, setOfferAmount] = useState("")
-  const [isSettingOffer, setIsSettingOffer] = useState(false)
+  const [offerAmount, setOfferAmount] = useState("");
+  const [isSettingOffer, setIsSettingOffer] = useState(false);
 
   const {
     vehicle,
@@ -45,7 +35,10 @@ export default function VehicleDetailPage() {
     handleAssign,
     assigning,
     refetch,
-  } = useAdminVehicleDetail(id)
+  } = useAdminVehicleDetail(id);
+
+// console.log(inspectors);
+
 
   // Send offer mutation
   // const [sendOffer, { loading: sendingOffer }] = useMutation(
@@ -114,7 +107,7 @@ export default function VehicleDetailPage() {
       <div className="flex items-center justify-center min-h-[60vh]">
         <Loader2 size={24} className="animate-spin text-[#E8A020]" />
       </div>
-    )
+    );
   }
 
   // Error state
@@ -129,15 +122,16 @@ export default function VehicleDetailPage() {
           Go back
         </button>
       </div>
-    )
+    );
   }
 
   const statusStyle =
-    STATUS_STYLES[vehicle.status] ?? "bg-gray-100 text-gray-600 border-gray-200"
-  const primaryImage = vehicle.imageUrls?.[0]?.imageUrl
+    STATUS_STYLES[vehicle.status] ??
+    "bg-gray-100 text-gray-600 border-gray-200";
+  const primaryImage = vehicle.imageUrls?.[0]?.imageUrl;
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4">
       {/* Header */}
       <div className="flex items-center justify-between">
         <button
@@ -154,12 +148,9 @@ export default function VehicleDetailPage() {
         </div>
       </div>
 
-      <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
-
+      <div className="grid grid-cols-1 xl:grid-cols-3 gap-4">
         {/* ── Left — main content ─────────────────────────── */}
-        <div className="xl:col-span-2 space-y-6">
-
-          {/* Vehicle header */}
+        <div className="xl:col-span-2 space-y-4">
           <div className="bg-white rounded-2xl border border-border p-5">
             <div className="flex items-start gap-4">
               <div className="w-24 h-24 rounded-xl bg-[#FFF7E4] flex items-center justify-center shrink-0 overflow-hidden">
@@ -167,7 +158,7 @@ export default function VehicleDetailPage() {
                   <img
                     src={primaryImage}
                     alt={`${vehicle.year} ${vehicle.make}`}
-                    className="w-full h-full object-cover"
+                    className="w-full h-full object-contain p-1"
                   />
                 ) : (
                   <span className="text-4xl">🚗</span>
@@ -180,9 +171,8 @@ export default function VehicleDetailPage() {
                     <h1 className="text-xl font-bold text-foreground">
                       {vehicle.year} {vehicle.make} {vehicle.model}
                     </h1>
-                    <p className="text-sm text-muted-foreground">
-                      {vehicle.id.slice(0, 8).toUpperCase()}
-                      {vehicle.vin ? ` · ${vehicle.vin}` : ""}
+                    <p className="text-sm text-muted-foreground font-courier-prime">
+                      {vehicle.bookingReference}
                     </p>
                   </div>
                   <span
@@ -198,9 +188,8 @@ export default function VehicleDetailPage() {
 
           {/* Photos */}
           <PhotoStrip
-            imageUrls={
-              vehicle.imageUrls?.map((img) => img.imageUrl) ?? []
-            }
+            images={vehicle.imageUrls}
+            imageUrls={vehicle.imageUrls?.map((img) => img.imageUrl) ?? []}
           />
 
           {/* TAV breakdown */}
@@ -215,14 +204,15 @@ export default function VehicleDetailPage() {
 
         {/* ── Right — actions panel ───────────────────────── */}
         <div className="space-y-4">
-
-          {/* Status flow */}
+          {vehicle.status === "PENDING_REVIEW" && (
+            <PendingReviewPanel vehicleId={vehicle.id} onSuccess={refetch} />
+          )}
           <StatusFlow currentStatus={vehicle.status} />
 
-          {/* Inspector assignment */}
           <AgentAssignment
             vehicleId={vehicle.id}
             vehicleRegion={vehicle.region ?? null}
+            vehicleStatus={vehicle.status} // ← add this
             currentAgentName={vehicle.agentName ?? null}
             currentAgentPhone={vehicle.agentPhone ?? null}
             inspectors={inspectors}
@@ -242,16 +232,14 @@ export default function VehicleDetailPage() {
                 <p className="text-2xl font-bold text-[#E8A020]">
                   ₦{vehicle.offer.toLocaleString()}
                 </p>
-                <p className="text-xs text-green-600">
-                  ✅ Offer sent to user
-                </p>
+                <p className="text-xs text-green-600">✅ Offer sent to user</p>
               </div>
             ) : isSettingOffer ? (
               <div className="space-y-2">
                 <div>
                   <p className="text-xs text-muted-foreground mb-1">
-                    TAV Range: ₦{vehicle.min?.toLocaleString()} —{" "}
-                    ₦{vehicle.max?.toLocaleString()}
+                    TAV Range: ₦{vehicle.min?.toLocaleString()} — ₦
+                    {vehicle.max?.toLocaleString()}
                   </p>
                   <input
                     type="number"
@@ -271,12 +259,11 @@ export default function VehicleDetailPage() {
                       <Loader2 size={12} className="animate-spin" />
                     )}
                     {sendingOffer ? "Sending..." : "Send Offer"} */}
-                    Hoioooo
                   </button>
                   <button
                     onClick={() => {
-                      setIsSettingOffer(false)
-                      setOfferAmount("")
+                      setIsSettingOffer(false);
+                      setOfferAmount("");
                     }}
                     className="flex-1 border border-border text-sm py-2 rounded-lg hover:bg-muted/30"
                   >
@@ -316,9 +303,9 @@ export default function VehicleDetailPage() {
           )}
 
           {/* Activity log */}
-          <ActivityLog vehicleId={id} />
+          <ActivityLog inspectorId={vehicle.inspectorId ?? ""} />
         </div>
       </div>
     </div>
-  )
+  );
 }

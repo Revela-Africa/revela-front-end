@@ -65,7 +65,7 @@ export default function FinalStep() {
     },
     {
       key: "agentAssigned" as const,
-      label: "Agent assigned + notified",
+      label: "Inspector assigned + notified",
       description:
         "You'll receive their name, photo, and live tracking link the morning before pickup",
       tag: formatDate(collectionDate),
@@ -90,7 +90,7 @@ export default function FinalStep() {
     },
   ];
   function handleDone() {
-    router.push("/home");
+    router.replace("/home");
     reset();
   }
 

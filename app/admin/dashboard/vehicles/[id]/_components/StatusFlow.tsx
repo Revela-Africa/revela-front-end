@@ -4,8 +4,10 @@ const STATUSES = [
   { key: "SUBMITTED", label: "Registered" },
   { key: "RANGE_PROVIDED", label: "TAV Generated" },
   { key: "INSPECTION_SCHEDULED", label: "Pickup Scheduled" },
+  { key: "INSPECTOR_ASSIGNED", label: "Inspector Assigned" },
   { key: "UNDER_ASSESSMENT", label: "Under Assessment" },
   { key: "OFFER_SENT", label: "Offer Sent" },
+  { key: "OFFER_REJECTED", label: "Offer Rejected" },
   { key: "ACCEPTED", label: "Offer Accepted" },
   { key: "PAID", label: "Payment Issued" },
 ]

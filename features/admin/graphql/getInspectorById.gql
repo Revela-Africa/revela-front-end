@@ -1,0 +1,10 @@
+query GetInspectorById($inspectorId: String!) {
+    getInspectorById(inspectorId: $inspectorId){
+    id
+    email
+    fullName
+    phone
+    region
+    isAvailable
+    }
+}

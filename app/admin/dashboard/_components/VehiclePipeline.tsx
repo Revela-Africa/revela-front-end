@@ -35,7 +35,7 @@ export function VehiclePipeline() {
   ]
 
   return (
-    <div className="bg-white rounded-2xl border border-border p-5">
+    <div className="bg-white rounded-2xl h-full border border-border p-5">
       <div className="flex items-center justify-between mb-4">
         <div>
           <h2 className="text-sm font-bold text-foreground">
@@ -49,7 +49,7 @@ export function VehiclePipeline() {
           </div>
         </div>
         <button
-          onClick={() => router.push("/vehicles")}
+          onClick={() => router.push("/dashboard/vehicles")}
           className="text-xs text-[#E8A020] font-bold hover:underline"
         >
           View all →
@@ -60,7 +60,7 @@ export function VehiclePipeline() {
         {PIPELINE.map((item) => (
           <button
             key={item.label}
-            onClick={() => router.push(`/vehicles?status=${item.status}`)}
+            onClick={() => router.push(`/dashboard/vehicles?status=${item.status}`)}
             className={`rounded-xl border p-4 text-left hover:opacity-80 transition-opacity ${item.color}`}
           >
             <p className="text-3xl font-bold">

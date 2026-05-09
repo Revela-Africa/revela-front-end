@@ -1,15 +1,15 @@
-import { useQuery, useMutation } from "@apollo/client/react"
+import { useQuery, useMutation } from "@apollo/client/react";
 import {
   AdminGetUserSingleVehicleDocument,
   GetInspectorsByRegionDocument,
   GetAllInspectorsDocument,
   AssignInspectorDocument,
-} from "@/graphql/generated/graphql"
-import { useState } from "react"
-import { appToast } from "@/lib/toast"
+} from "@/graphql/generated/graphql";
+import { useState } from "react";
+import { appToast } from "@/lib/toast";
 
 export function useAdminVehicleDetail(vehicleId: string) {
-  const [showAllInspectors, setShowAllInspectors] = useState(false)
+  const [showAllInspectors, setShowAllInspectors] = useState(false);
 
   // Vehicle data
   const {
@@ -21,9 +21,10 @@ export function useAdminVehicleDetail(vehicleId: string) {
     variables: { vehicleId },
     skip: !vehicleId,
     fetchPolicy: "cache-and-network",
-  })
+  });
 
-  const vehicle = vehicleData?.adminGetUserSingleVehicle
+  const vehicle = vehicleData?.adminGetUserSingleVehicle;
+
 
   // Regional inspectors
   const { data: regionalData, loading: regionalLoading } = useQuery(
@@ -31,14 +32,21 @@ export function useAdminVehicleDetail(vehicleId: string) {
     {
       variables: { region: vehicle?.region ?? "" },
       skip: !vehicle?.region,
-    }
-  )
+    },
+  );
+
 
   // All inspectors (loaded on demand)
-  const { data: allData, loading: allLoading, refetch: fetchAllInspectors } =
-    useQuery(GetAllInspectorsDocument, {
-      skip: !showAllInspectors,
-    })
+  const {
+    data: allData,
+    loading: allLoading,
+    refetch: fetchAllInspectors,
+  } = useQuery(GetAllInspectorsDocument, {
+    // skip: !showAllInspectors,
+  });
+
+  
+
 
   // Assign inspector mutation
   const [assignInspector, { loading: assigning }] = useMutation(
@@ -48,38 +56,46 @@ export function useAdminVehicleDetail(vehicleId: string) {
         appToast.success({
           title: "Inspector assigned",
           description: "Inspector has been notified",
-        })
-        refetch()
+        });
+        refetch();
       },
       onError: (err) => {
         appToast.error({
           title: "Assignment failed",
           description: err.message,
-        })
+        });
       },
-    }
-  )
+    },
+  );
 
-  const regionalInspectors = regionalData?.getInspectorsByRegion ?? []
-  const allInspectors = allData?.getAllInspectors ?? []
+  const regionalInspectors = regionalData?.getInspectorsByRegion ?? [];
+  const allInspectors = allData?.getAllInspectors ?? [];
+
 
   // Merge — regional first, then others marked as out-of-region
-  const inspectors = showAllInspectors
-    ? allInspectors.map((inspector) => ({
-        ...inspector,
-        isOutOfRegion: inspector.region !== vehicle?.region,
-      }))
-    : regionalInspectors.map((inspector) => ({
-        ...inspector,
-        isOutOfRegion: false,
-      }))
+const inspectors = showAllInspectors
+  ? allInspectors.map((inspector) => ({
+      ...inspector,
+      isOutOfRegion: inspector.region !== vehicle?.region,
+      // null means unknown — treat as unavailable to be safe
+      isAvailable: inspector.isAvailable === true,
+    }))
+  : regionalInspectors.map((inspector) => ({
+      ...inspector,
+      isOutOfRegion: false,
+      isAvailable: inspector.isAvailable === true,
+    }))
 
   async function handleAssign(inspectorId: string) {
     await assignInspector({
       variables: { vehicleId, inspectorId },
-    })
+    });
   }
 
+console.log(allData);
+
+
+  
   return {
     vehicle,
     vehicleLoading,
@@ -88,11 +104,11 @@ export function useAdminVehicleDetail(vehicleId: string) {
     inspectorsLoading: showAllInspectors ? allLoading : regionalLoading,
     showAllInspectors,
     setShowAllInspectors: (val: boolean) => {
-      setShowAllInspectors(val)
-      if (val) fetchAllInspectors()
+      setShowAllInspectors(val);
+      if (val) fetchAllInspectors();
     },
     handleAssign,
     assigning,
     refetch,
-  }
+  };
 }

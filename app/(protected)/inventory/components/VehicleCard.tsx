@@ -28,15 +28,23 @@ const STATUS_MAP: Record<string, { label: string; style: string }> = {
   },
   INSPECTION_SCHEDULED: {
     label: "Pickup Scheduled",
+    style: "text-[#D4900A] ",
+  },
+  INSPECTOR_ASSIGNED: {
+    label: "Inspector Assigned",
     style: "text-[#D4900A]",
   },
   UNDER_ASSESSMENT: {
     label: "Being Inspected",
-    style: "text-purple-700",
+    style: "text-[#D4900A]",
   },
   OFFER_SENT: {
     label: "Offer Ready",
     style: "text-[#D4900A]",
+  },
+  OFFER_REJECTED: {
+    label: "Offer Rejected",
+    style: "text-red-600",
   },
   ACCEPTED: {
     label: "Accepted",
@@ -50,10 +58,12 @@ const STATUS_MAP: Record<string, { label: string; style: string }> = {
 
 const STATUS_PROGRESS: Record<string, number> = {
   SUBMITTED: 10,
-  RANGE_PROVIDED: 30,
-  INSPECTION_SCHEDULED: 55,
+  RANGE_PROVIDED: 25,
+  INSPECTION_SCHEDULED: 40,
+  INSPECTOR_ASSIGNED: 55,
   UNDER_ASSESSMENT: 65,
   OFFER_SENT: 80,
+  OFFER_REJECTED: 80,
   ACCEPTED: 90,
   PAID: 100,
 }
@@ -76,12 +86,14 @@ function getCTA(vehicle: Vehicle, router: ReturnType<typeof useRouter>): CTA | n
         action: () => router.push(`/intake/offer/${vehicle.id}`),
       }
     case "INSPECTION_SCHEDULED":
+    case "INSPECTOR_ASSIGNED":
     case "UNDER_ASSESSMENT":
       return {
         label: "View Booking →",
         action: () => router.push(`/intake/offer/${vehicle.id}`),
       }
     case "OFFER_SENT":
+    case "OFFER_REJECTED":
       return {
         label: "View Final Offer →",
         action: () => router.push(`/intake/offer/${vehicle.id}`),
@@ -135,7 +147,7 @@ export function VehicleCard({ vehicle }: { vehicle: Vehicle }) {
         <div className="flex-1 min-w-0">
           <div className="flex items-start justify-between gap-2">
             <div>
-              <span className={`text-[10px] font-bold tracking-[0.6px] ${status.style}`}>
+              <span className={`text-[10px] font-bold uppercase tracking-[0.6px] ${status.style}`}>
                 {status.label}
               </span>
               <p className="text-base font-bold text-[#171D17] mt-1">
@@ -146,7 +158,7 @@ export function VehicleCard({ vehicle }: { vehicle: Vehicle }) {
               </p>
             </div>
             <button
-              onClick={(e) => e.stopPropagation()} // prevent card click
+              onClick={(e) => e.stopPropagation()}
               className="text-muted-foreground"
             >
               <MoreVertical size={16} />

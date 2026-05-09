@@ -1,19 +1,40 @@
-import { Check, Clock } from "lucide-react"
+import { Check } from "lucide-react"
 
-const STATUSES = [
+const BASE_STATUSES = [
   { key: "SUBMITTED", label: "Registered" },
   { key: "RANGE_PROVIDED", label: "TAV Generated" },
   { key: "INSPECTION_SCHEDULED", label: "Pickup Scheduled" },
-  { key: "UNDER_ASSESSMENT", label: "Mechanic Verified" },
+  { key: "INSPECTOR_ASSIGNED", label: "Inspector Assigned" },
+  { key: "UNDER_ASSESSMENT", label: "Under Assessment" },
   { key: "OFFER_SENT", label: "Offer Sent" },
   { key: "ACCEPTED", label: "Collected" },
   { key: "PAID", label: "Payment Issued" },
-]
+] as const
 
-const ORDER = STATUSES.map((s) => s.key)
+const FAILURE_STATUS = {
+  key: "PENDING_REVIEW",
+  label: "Valuation Failed ⚠️",
+} as const
+
+type BaseStatusKey = (typeof BASE_STATUSES)[number]["key"]
+type FailureStatusKey = typeof FAILURE_STATUS.key
+export type VehicleStatus = BaseStatusKey | FailureStatusKey
+
+function getStatuses(currentStatus: string) {
+  if (currentStatus === "PENDING_REVIEW") {
+    return [
+      BASE_STATUSES[0], // SUBMITTED
+      FAILURE_STATUS,
+      ...BASE_STATUSES.slice(1),
+    ]
+  }
+  return [...BASE_STATUSES]
+}
 
 export function StatusFlow({ currentStatus }: { currentStatus: string }) {
-  const currentIndex = ORDER.indexOf(currentStatus)
+  const STATUSES = getStatuses(currentStatus)
+  const ORDER = STATUSES.map((s) => s.key)
+  const currentIndex = ORDER.indexOf(currentStatus as VehicleStatus)
 
   return (
     <div className="bg-white rounded-2xl border border-border p-4">

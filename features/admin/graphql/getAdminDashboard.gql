@@ -1,0 +1,12 @@
+query GetAdminDashboard {
+  getAdminDashboard {
+    avgPayoutThisMonth
+    revenueMTD
+    activeVehicles
+    avgCycleTimeDays
+    revenueLastSixMonths {
+      month
+      revenue
+    }
+  }
+}

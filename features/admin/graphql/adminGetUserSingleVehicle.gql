@@ -22,6 +22,11 @@ query AdminGetUserSingleVehicle($vehicleId: String!) {
     agentName
     agentPhone
     scheduledAt
+    collectionDate
+    timeSlot
+    bookingReference
+    inspectorId
+    assignedToInspector
     expiresAt
     region
     imageUrls {

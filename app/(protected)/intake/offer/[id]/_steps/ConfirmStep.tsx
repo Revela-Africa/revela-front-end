@@ -15,8 +15,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { AVAILABLE_REGIONS } from "@/shared/constants/nigeria-states";
 
-const AVAILABLE_REGIONS = ["Lagos", "Ilorin"];
+
 
 export default function ConfirmStep() {
   const {

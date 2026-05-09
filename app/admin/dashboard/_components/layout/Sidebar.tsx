@@ -21,8 +21,8 @@ const NAV_ITEMS = [
       { label: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
       { label: "Vehicles", href: "/dashboard/vehicles", icon: Car },
       {
-        label: "Mechanic Verify",
-        href: "/dashboard/mechanic-verify",
+        label: "Inspector Invite",
+        href: "/dashboard/inspector-invite",
         icon: ClipboardCheck,
       },
       { label: "Status Board", href: "/dashboard/status-board", icon: BarChart3 },

@@ -39,3 +39,5 @@ export const NIGERIA_STATES = [
 ] as const
 
 export type NigeriaState = typeof NIGERIA_STATES[number]
+
+export const AVAILABLE_REGIONS = ["Lagos", "Ilorin"];

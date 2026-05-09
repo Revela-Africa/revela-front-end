@@ -1,33 +1,23 @@
-"use client"
+"use client";
 
-import { useState } from "react"
+import { ImageUrlType } from "@/graphql/generated/graphql";
+import { useState } from "react";
 
 interface Props {
-  imageUrls: string[]
+  imageUrls: string[];
+  images: ImageUrlType[];
 }
 
-const ANGLE_LABELS = [
-  "Front",
-  "Rear",
-  "Driver",
-  "Passenger",
-  "Engine",
-  "Interior",
-  "Chassis",
-  "Extra",
-]
-
-export function PhotoStrip({ imageUrls }: Props) {
-  const [enlarged, setEnlarged] = useState<string | null>(null)
-
-  if (!imageUrls.length) {
+export function PhotoStrip({ imageUrls, images }: Props) {
+  const [enlarged, setEnlarged] = useState<string | null>(null);
+  if (!images.length) {
     return (
       <div className="bg-white rounded-2xl border border-border p-4">
         <p className="text-sm text-muted-foreground text-center py-4">
           No photos uploaded
         </p>
       </div>
-    )
+    );
   }
 
   return (
@@ -37,20 +27,20 @@ export function PhotoStrip({ imageUrls }: Props) {
           {imageUrls.length} Photos
         </p>
         <div className="flex gap-2 overflow-x-auto pb-1">
-          {imageUrls.map((url, index) => (
+          {images.map((image, index) => (
             <div key={index} className="shrink-0">
               <button
-                onClick={() => setEnlarged(url)}
+                onClick={() => setEnlarged(image.imageUrl)}
                 className="w-20 h-16 rounded-lg overflow-hidden bg-muted block hover:opacity-80 transition-opacity"
               >
                 <img
-                  src={url}
-                  alt={ANGLE_LABELS[index] ?? `Photo ${index + 1}`}
+                  src={image.imageUrl}
+                  alt={`Vehicle ${image.angle} Image`}
                   className="w-full h-full object-cover"
                 />
               </button>
               <p className="text-[10px] text-muted-foreground text-center mt-1">
-                {ANGLE_LABELS[index] ?? `Photo ${index + 1}`}
+                {image.angle.replace(/_/g, " ")}
               </p>
             </div>
           ))}
@@ -60,16 +50,16 @@ export function PhotoStrip({ imageUrls }: Props) {
       {/* Lightbox */}
       {enlarged && (
         <div
-          className="fixed inset-0 bg-black/80 z-50 flex items-center justify-center p-4"
+          className="fixed h-full inset-0 bg-black/80 z-50 flex items-center justify-center p-4"
           onClick={() => setEnlarged(null)}
         >
           <img
             src={enlarged}
             alt="Enlarged"
-            className="max-w-full max-h-full rounded-xl object-contain"
+            className=" h-75 rounded-sm object-contain"
           />
         </div>
       )}
     </>
-  )
+  );
 }

@@ -15,8 +15,6 @@ export function useAdminVehicles() {
   )
 
   const allVehicles = data?.adminGetAllVehicles ?? []
-
-  console.log(allVehicles);
   
 
   // Filter client-side — no need for separate API calls per filter
@@ -27,7 +25,7 @@ export function useAdminVehicles() {
 
       const matchesSearch =
         !searchQuery ||
-        `${vehicle.make} ${vehicle.model} ${vehicle.year} ${vehicle.id}`
+        `${vehicle.make} ${vehicle.model} ${vehicle.year} ${vehicle.id} ${vehicle.bookingReference}`
           .toLowerCase()
           .includes(searchQuery.toLowerCase())
 
@@ -36,16 +34,18 @@ export function useAdminVehicles() {
   }, [allVehicles, statusFilter, searchQuery])
 
   // Stats derived from real data
-  const stats = useMemo(() => ({
-    total: allVehicles.length,
-    submitted: allVehicles.filter((v) => v.status === "SUBMITTED").length,
-    rangeProvided: allVehicles.filter((v) => v.status === "RANGE_PROVIDED").length,
-    inspectionScheduled: allVehicles.filter((v) => v.status === "INSPECTION_SCHEDULED").length,
-    underAssessment: allVehicles.filter((v) => v.status === "UNDER_ASSESSMENT").length,
-    offerSent: allVehicles.filter((v) => v.status === "OFFER_SENT").length,
-    accepted: allVehicles.filter((v) => v.status === "ACCEPTED").length,
-    paid: allVehicles.filter((v) => v.status === "PAID").length,
-  }), [allVehicles])
+const stats = useMemo(() => ({
+  total: allVehicles.length,
+  submitted: allVehicles.filter((v) => v.status === "SUBMITTED").length,
+  rangeProvided: allVehicles.filter((v) => v.status === "RANGE_PROVIDED").length,
+  inspectionScheduled: allVehicles.filter((v) => v.status === "INSPECTION_SCHEDULED").length,
+  inspectorAssigned: allVehicles.filter((v) => v.status === "INSPECTOR_ASSIGNED").length,
+  underAssessment: allVehicles.filter((v) => v.status === "UNDER_ASSESSMENT").length,
+  offerSent: allVehicles.filter((v) => v.status === "OFFER_SENT").length,
+  offerRejected: allVehicles.filter((v) => v.status === "OFFER_REJECTED").length,
+  accepted: allVehicles.filter((v) => v.status === "ACCEPTED").length,
+  paid: allVehicles.filter((v) => v.status === "PAID").length,
+}), [allVehicles])
 
   return {
     vehicles: filteredVehicles,

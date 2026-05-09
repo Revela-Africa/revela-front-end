@@ -5,7 +5,7 @@ import { useParams } from "next/navigation"
 import { useQuery } from "@apollo/client/react"
 import { GetSingleUserVehicleDocument } from "@/graphql/generated/graphql"
 import { useOfferStore } from "@/features/offer/store/useOfferStore"
-import { generateFakeTAV } from "@/features/offer/utils/generateFakeTAV"
+
 
 import ResultsStep from "./_steps/ResultsStep"
 import BankStep from "./_steps/BankStep"
@@ -15,17 +15,22 @@ import FinalStep from "./_steps/FinalStep"
 import OfferStep from "./_steps/OfferStep"
 
 // Status → step mapping
-// This is the single source of truth for routing
 function getStepFromStatus(status: string): number {
   switch (status) {
     case "RANGE_PROVIDED":
-      return 1  // ResultsStep — see TAV, accept to book inspection
+      return 1  // ResultsStep
+
     case "INSPECTION_SCHEDULED":
-      return 5  // FinalStep — booking already confirmed
+    case "INSPECTOR_ASSIGNED":
     case "UNDER_ASSESSMENT":
-      return 5  // FinalStep — still show booking, inspection in progress
+      return 5  // FinalStep — user watches timeline progress
+
     case "OFFER_SENT":
-      return 6  // OfferStep — accept real final offer
+    case "OFFER_REJECTED":
+    case "ACCEPTED":
+    case "PAID":
+      return 6  // OfferStep — final offer interaction
+
     default:
       return 1
   }

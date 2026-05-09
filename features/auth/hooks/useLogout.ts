@@ -14,12 +14,12 @@ export function useLogout() {
     try {
       await logoutMutation()
       await clearAuthCookies()
-      router.push("/login")
+      router.replace("/login")
     } catch {
       // Even if backend fails — clear cookies and redirect
       // User should never be stuck logged in
       await clearAuthCookies()
-      router.push("/login")
+      router.replace("/login")
     } finally {
       setIsLoading(false)
     }
