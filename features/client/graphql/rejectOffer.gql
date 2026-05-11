@@ -1,0 +1,6 @@
+mutation RejectOffer($id: String!) {
+  rejectOffer(id: $id) {
+    id
+    status
+  }
+}

@@ -1,0 +1,35 @@
+query AdminGetAllVehicles {
+  adminGetAllVehicles {
+    id
+    status
+    make
+    model
+    year
+    mileage
+    condition
+    vin
+    tav
+    min
+    max
+    offer
+    serviceHistory
+    engineType
+    transmission
+    drivetrain
+    structuralDamage
+    mechanicalOverhaul
+    userId
+    agentName
+    agentPhone
+    scheduledAt
+    expiresAt
+    region
+    inspectorId
+    assignedToInspector
+    bookingReference
+    imageUrls {
+      imageUrl
+      angle
+    }
+  }
+}

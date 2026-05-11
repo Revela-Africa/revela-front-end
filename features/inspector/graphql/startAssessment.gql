@@ -1,0 +1,6 @@
+mutation StartAssessment($input: StartAssessmentInput!) {
+  startAssessment(input: $input) {
+    id
+    status
+  }
+}

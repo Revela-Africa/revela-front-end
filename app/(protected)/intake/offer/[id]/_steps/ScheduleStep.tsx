@@ -24,6 +24,7 @@ export default function ScheduleStep() {
     setTimeSlot,
     collectionAddress,
     collectionDate,
+    region,
     timeSlot,
     vehicleId,
     bankName,
@@ -45,12 +46,10 @@ export default function ScheduleStep() {
       bankName,
       accountNumber,
       collectionDate,
+      region,
       timeSlot,
       collectionAddress,
     };
-
-    console.log("[SchedulePickup] Payload:", payload);
-
     try {
       const { data } = await schedulePickup({
         variables: {
@@ -76,7 +75,6 @@ export default function ScheduleStep() {
       console.error("[SchedulePickup] Error:", message);
     }
   }
-
 
   return (
     <div className="font-cabinet space-y-6 py-4">
@@ -129,7 +127,6 @@ export default function ScheduleStep() {
             selected={selectedDate ?? undefined}
             onSelect={(date) => {
               if (!date) return;
-              // Use local date parts instead of ISO string to avoid timezone shift
               const year = date.getFullYear();
               const month = String(date.getMonth() + 1).padStart(2, "0");
               const day = String(date.getDate()).padStart(2, "0");
@@ -139,7 +136,9 @@ export default function ScheduleStep() {
               const minDate = new Date();
               minDate.setHours(0, 0, 0, 0);
               minDate.setDate(minDate.getDate() + 2);
-              return date < minDate;
+
+              // Disable past dates, dates less than 2 days out, AND Sundays
+              return date < minDate || date.getDay() === 0;
             }}
           />
         </div>
@@ -185,14 +184,17 @@ export default function ScheduleStep() {
         </div>
       )}
 
-      <div className="p-4 rounded-xl flex gap-x-4 bg-[#FFF7E4] border border-[#E8A02040]">
-        <ShieldCheck size={20} color="#D4900A" />
+      <div className="flex gap-x-4 rounded-xl border border-[#E8A02040] bg-[#FFF7E4] p-4">
+        <ShieldCheck size={20} color="#D4900A" className="mt-0.5 shrink-0" />
         <div className="max-w-65">
           <p className="text-sm text-muted-foreground">
-            A certified{" "}
-            <span className="text-[#D4900A] font-bold">Revela inspector</span>{" "}
-            will meet you for a final 15-minute verification of the vehicle's
-            condition before handover.
+            Your vehicle will be{" "}
+            <span className="font-bold text-[#D4900A]">picked up</span> and
+            transported to a{" "}
+            <span className="font-bold text-[#D4900A]">
+              Revela verified workshop
+            </span>{" "}
+            for a thorough inspection before final valuation.
           </p>
         </div>
       </div>

@@ -1,53 +1,54 @@
-import { create } from "zustand"
+import { create } from "zustand";
 
 interface OfferStore {
-  step: number
+  step: number;
 
-  // Vehicle data 
-  vehicleId: string | null
-  make: string | null
-  model: string | null
-  year: string | null
-  mileage: string | null
-  condition: string | null
-  tav: number | null
-  min: number | null
-  max: number | null
-  offer: number | null
-  imageUrls: { imageUrl: string; angle: string }[]
+  // Vehicle data
+  vehicleId: string | null;
+  make: string | null;
+  model: string | null;
+  year: string | null;
+  mileage: string | null;
+  condition: string | null;
+  tav: number | null;
+  min: number | null;
+  max: number | null;
+  offer: number | null;
+  imageUrls: { imageUrl: string; angle: string }[];
 
   // Bank details / bookingReference
-  bankName: string
-  accountNumber: string
-
-  bookingReference:string
+  bankName: string;
+  accountNumber: string;
+  bookingReference: string;
 
   // Schedule
-  collectionDate: string
-  timeSlot: string
-  collectionAddress: string
+  collectionDate: string;
+  timeSlot: string;
+  region: string;
+  collectionAddress: string;
   // Actions
-  setStep: (step: number) => void
+  setStep: (step: number) => void;
   setVehicleData: (data: {
-    vehicleId: string
-    make: string
-    model: string | null
-    year: string
-    mileage: string
-    condition: string
-    tav: number
-    min: number
-    max: number
-  }) => void
-setCollectionDate: (date: string) => void
-setTimeSlot: (slot: string) => void
-setBookingReference:(bookingReference:string) => void
-  setImageUrls: (urls: { imageUrl: string; angle: string }[]) => void
-  setOffer: (offer: number) => void
-  setBankDetails: (bankName: string, accountNumber: string) => void
-  setSchedule: (collectionDate: string, timeSlot: string) => void
-  setCollectionAddress: (address: string) => void
-  reset: () => void
+    vehicleId: string;
+    make: string;
+    model: string | null;
+    year: string;
+    mileage: string;
+    condition: string;
+    tav: number;
+    min: number;
+    max: number;
+  }) => void;
+  setRegion: (region: string) => void;
+  setCollectionDate: (date: string) => void;
+  setTimeSlot: (slot: string) => void;
+  setBookingReference: (bookingReference: string) => void;
+  setImageUrls: (urls: { imageUrl: string; angle: string }[]) => void;
+  setOffer: (offer: number) => void;
+  setBankDetails: (bankName: string, accountNumber: string) => void;
+  setSchedule: (collectionDate: string, timeSlot: string) => void;
+  setCollectionAddress: (address: string) => void;
+  reset: () => void;
 }
 
 const initialState = {
@@ -56,7 +57,7 @@ const initialState = {
   make: null,
   model: null,
   year: null,
- imageUrls: [],
+  imageUrls: [],
   mileage: null,
   condition: null,
   tav: null,
@@ -67,9 +68,10 @@ const initialState = {
   accountNumber: "",
   collectionDate: "",
   timeSlot: "",
+  region: "",
   collectionAddress: "",
-  bookingReference:"",
-}
+  bookingReference: "",
+};
 
 export const useOfferStore = create<OfferStore>((set) => ({
   ...initialState,
@@ -89,19 +91,20 @@ export const useOfferStore = create<OfferStore>((set) => ({
       max: data.max,
     }),
 
-setImageUrls: (urls:{ imageUrl: string; angle: string; }[]) => set({ imageUrls: urls }),
+  setImageUrls: (urls: { imageUrl: string; angle: string }[]) =>
+    set({ imageUrls: urls }),
   setOffer: (offer) => set({ offer }),
 
-  setBankDetails: (bankName, accountNumber) =>
-    set({ bankName, accountNumber }),
+  setBankDetails: (bankName, accountNumber) => set({ bankName, accountNumber }),
 
   setCollectionDate: (date) => set({ collectionDate: date }),
-setTimeSlot: (slot) => set({ timeSlot: slot }),
-setBookingReference: (bookingReference) => set({ bookingReference: bookingReference }),
+  setTimeSlot: (slot) => set({ timeSlot: slot }),
+  setBookingReference: (bookingReference) =>
+    set({ bookingReference: bookingReference }),
 
-  setSchedule: (collectionDate, timeSlot) =>
-    set({ collectionDate, timeSlot }),
-
-setCollectionAddress: (address: string) => set({ collectionAddress: address }),
+  setSchedule: (collectionDate, timeSlot) => set({ collectionDate, timeSlot }),
+  setRegion: (region: string) => set({ region }),
+  setCollectionAddress: (address: string) =>
+    set({ collectionAddress: address }),
   reset: () => set(initialState),
-}))
+}));

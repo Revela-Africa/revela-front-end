@@ -1,0 +1,7 @@
+mutation SendOffer($id: String!, $offer: Float!) {
+  sendOffer(id: $id, offer: $offer) {
+    id
+    status
+    offer
+  }
+}

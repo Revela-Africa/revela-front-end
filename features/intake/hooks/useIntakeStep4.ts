@@ -11,6 +11,7 @@ import { uploadImage } from "@/lib/cloudinary/uploadImage";
 import { useMutation } from "@apollo/client/react";
 import { SubmitVehicleDocument } from "@/graphql/generated/graphql";
 import { appToast } from "@/lib/toast";
+import { useAuthGuard } from "@/features/auth/hooks/useAuthGuard";
 
 const REQUIRED_ANGLES = [
   { id: "front", label: "Front View" },
@@ -29,10 +30,10 @@ export function useIntakeStep4() {
     photos,
     setPhotoAtIndex,
     removePhoto,
-    reset,
   } = useIntakeStore();
   const [isLoading, setIsLoading] = useState(false); 
   const [submitVehicle] = useMutation(SubmitVehicleDocument);
+  const {user} = useAuthGuard()
 
   const form = useForm<IntakeStep4Values>({
     resolver: zodResolver(intakeStep4Schema),
@@ -72,7 +73,7 @@ async function onSubmit() {
     const uploadResults = await Promise.all(
       photos
         .filter(Boolean)
-        .map((file) => uploadImage(file, "revela/vehicles")),
+        .map((file) => uploadImage(file, `revela/vehicle-submissions/${user?.email}`)),
     )
 
     const imageUrls = uploadResults.map((result, index) => ({
@@ -101,12 +102,11 @@ async function onSubmit() {
       },
     })
 
-    console.log("[Submit] Response:", data)
+    // console.log("[Submit] Response:", data)
 
     if (data?.submitVehicle) {
       const vehicleId = data.submitVehicle.id
-      router.push(`/intake/processing/${vehicleId}`)
-      reset()
+      router.replace(`/intake/processing/${vehicleId}`)
     }
   } catch (err: any) {
     const message =

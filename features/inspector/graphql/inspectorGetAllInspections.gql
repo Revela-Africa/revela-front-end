@@ -1,0 +1,24 @@
+query InspectorGetAllInspections($filter: String) {
+  inspectorGetAllInspections(filter: $filter) {
+    id
+    status
+    make
+    model
+    year
+    mileage
+    condition
+    region
+    tav
+    min
+    max
+    agentName
+    agentPhone
+    scheduledAt
+    collectionAddress
+    imageUrls {
+      imageUrl
+      angle
+    }
+    userId
+  }
+}

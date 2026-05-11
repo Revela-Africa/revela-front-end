@@ -1,0 +1,14 @@
+mutation InviteInspector(
+  $email: String!
+  $fullName: String!
+  $phone: String!
+  $region: String!
+) {
+    
+  inviteInspector(
+    email: $email
+    fullName: $fullName
+    phone: $phone
+    region: $region
+  )
+}

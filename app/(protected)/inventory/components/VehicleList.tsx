@@ -10,7 +10,7 @@ export function VehicleList({
 }) {
   if (!vehicles) return null
 
-  // normalize → always array
+
   const list = Array.isArray(vehicles) ? vehicles : [vehicles]
 
   return (

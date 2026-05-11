@@ -1,0 +1,16 @@
+# mutation that helps manually provide a TAV value
+
+mutation ProvideRange(
+  $vehicleId: String!
+  $tav: Float!
+  $grade: String!
+) {
+  provideRange(vehicleId: $vehicleId, tav: $tav, grade: $grade) {
+    id
+    status
+    tav
+    min
+    max
+  }
+}
+

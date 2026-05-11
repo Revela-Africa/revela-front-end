@@ -25,5 +25,11 @@ query GetSingleUserVehicle($vehicleId: String!) {
     agentPhone
     scheduledAt
     expiresAt
+    bankName
+    accountNumber
+    collectionDate
+    timeSlot
+    collectionAddress
+    bookingReference
   }
 }

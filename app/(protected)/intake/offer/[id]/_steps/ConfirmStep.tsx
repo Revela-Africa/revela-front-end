@@ -6,7 +6,18 @@ import VehicleCarousel from "../../../_components/VehicleCarousel";
 import Link from "next/link";
 import { TextField } from "@/components/ui/textfield";
 import { Button } from "@/components/ui/button";
-import { ChevronRightIcon, Info } from "lucide-react";
+import { Info } from "lucide-react";
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { AVAILABLE_REGIONS } from "@/shared/constants/nigeria-states";
+
+
 
 export default function ConfirmStep() {
   const {
@@ -20,12 +31,15 @@ export default function ConfirmStep() {
     collectionAddress,
     setCollectionAddress,
     imageUrls,
+    setRegion,
+    region,
   } = useOfferStore();
   const { user } = useAuthGuard();
 
   const images = imageUrls.map((img) => img.imageUrl);
 
-  const isDisabled = collectionAddress.length < 8;
+  const isDisabled = !region || collectionAddress.trim().length < 8;
+
   return (
     <div className="font-cabinet space-y-6 py-4">
       <div>
@@ -55,7 +69,7 @@ export default function ConfirmStep() {
               value: `${Number(mileage).toLocaleString()} KM`,
             },
             { label: "Condition Grade", value: condition },
-            { label: "Assessed Value", value: `₦${tav?.toLocaleString()}` },
+            { label: "Assessed Value.  ( Not final )", value: `₦${tav?.toLocaleString()}` },
           ].map((item) => (
             <div
               key={item.label}
@@ -83,17 +97,30 @@ export default function ConfirmStep() {
           value={user?.fullName ?? ""}
           readOnly
         />
-        <TextField
-          id="phoneNumber"
-          label="Phone Number"
-          value={"+234 812 345 6789"}
-          readOnly
-        />
+        <Select
+          value={region}
+          onValueChange={(value) => setRegion(value || "")}
+        >
+          <SelectTrigger className="w-full">
+            <SelectValue placeholder="Select State" />
+          </SelectTrigger>
+
+          <SelectContent>
+            <SelectGroup>
+              {AVAILABLE_REGIONS.map((r) => (
+                <SelectItem key={r} value={r}>
+                  {r}
+                </SelectItem>
+              ))}
+            </SelectGroup>
+          </SelectContent>
+        </Select>
 
         <TextField
           id="collectionAddress"
           label="Collection Address"
           value={collectionAddress}
+          placeholder="No.42 Jibola Estate Vi lekki"
           required
           onChange={(e) => setCollectionAddress(e.target.value)}
         />
@@ -116,7 +143,7 @@ export default function ConfirmStep() {
         disabled={isDisabled}
         className="w-full bg-[#E8A020] normal-case text-white font-bold py-4 rounded-xl hover:opacity-90 transition-opacity"
       >
-        Verify Details 
+        Verify Details
       </Button>
 
       <p className="text-xs text-muted-foreground text-center px-4">

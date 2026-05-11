@@ -40,3 +40,15 @@ export const bankDetailsSchema = z.object({
 })
 
 export type BankDetailsValues = z.infer<typeof bankDetailsSchema>
+
+
+
+
+export const pickupSchema = z.object({
+  region: z.string().min(1, "Select a region"),
+  collectionAddress: z
+    .string()
+    .min(5, "Enter a valid address"),
+});
+
+export type PickupValues = z.infer<typeof pickupSchema>;

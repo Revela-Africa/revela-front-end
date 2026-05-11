@@ -11,7 +11,7 @@ type TextFieldProps = Omit<React.ComponentProps<typeof Input>, "id"> & {
 function TextField({ id, label, required, error, ref, ...inputProps }: TextFieldProps) {
   return (
     <Field data-invalid={!!error}>
-      <FieldLabel htmlFor={id} className="text-[#3A3A3A] tracking-[1.2px] uppercase font-normal -mb-1">
+      <FieldLabel htmlFor={id} className="text-[#3A3A3A] text-xs tracking-[1.2px] uppercase font-normal -mb-1">
         {label}
       </FieldLabel>
       <FieldContent>

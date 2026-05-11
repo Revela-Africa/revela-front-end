@@ -1,0 +1,10 @@
+query GetInspectorsByRegion($region: String!) {
+  getInspectorsByRegion(region: $region) {
+    id
+    fullName
+    phone
+    email
+    region
+    isAvailable
+  }
+}

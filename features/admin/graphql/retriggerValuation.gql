@@ -1,0 +1,4 @@
+# mutation to retrigger Ai Engine valuation
+mutation RetriggerValuation($vehicleId: String!) {
+  retriggerValuation(vehicleId: $vehicleId)
+}

@@ -1,0 +1,23 @@
+query GetInspectionById($vehicleId: String!) {
+  getInspectionById(vehicleId: $vehicleId) {
+    id
+    status
+    make
+    model
+    year
+    mileage
+    condition
+    region
+    tav
+    min
+    max
+    agentName
+    scheduledAt
+    collectionAddress
+    imageUrls {
+      imageUrl
+      angle
+    }
+    userId
+  }
+}

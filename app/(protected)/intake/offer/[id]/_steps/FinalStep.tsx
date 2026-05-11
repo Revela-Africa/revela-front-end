@@ -1,207 +1,75 @@
-"use client"
+"use client";
 
-import { useRouter, useParams } from "next/navigation"
-import { useOfferStore } from "@/features/offer/store/useOfferStore"
-import { useQuery } from "@apollo/client/react"
-import { GetSingleUserVehicleDocument } from "@/graphql/generated/graphql"
-import { Calendar, CheckCircle2, Info, MapPin, Clock } from "lucide-react"
-import Link from "next/link"
+import { useRouter, useParams } from "next/navigation";
+import { useOfferStore } from "@/features/offer/store/useOfferStore";
+import { useQuery } from "@apollo/client/react";
+import { GetSingleUserVehicleDocument } from "@/graphql/generated/graphql";
+import { Calendar, CheckCircle2, Info, MapPin, Clock } from "lucide-react";
+import Link from "next/link";
+import Loader from "@/app/(protected)/components/ui/Loader";
+import TimelineItem from "../../_components/TimelineItem";
+import { getTimelineState } from "@/features/offer/utils/getTimelineState";
 
-function formatDate(dateStr: string): string {
-  if (!dateStr) return "—"
-  const [year, month, day] = dateStr.split("-").map(Number)
-  const date = new Date(year, month - 1, day)
+function formatDate(dateStr: string | null | undefined): string {
+  if (!dateStr) return "—";
+  const [year, month, day] = dateStr.split("-").map(Number);
+  const date = new Date(year, month - 1, day);
   return date.toLocaleDateString("en-GB", {
     weekday: "short",
     day: "numeric",
     month: "short",
     year: "numeric",
-  })
+  });
 }
 
-function formatNaira(amount: number | null): string {
-  if (!amount) return "—"
-  return `₦${amount.toLocaleString()}`
+function formatNaira(amount: number | null | string): string {
+  if (typeof amount === "string") return amount;
+  if (!amount) return "—";
+  return `₦${amount.toLocaleString()}`;
 }
 
 // Maps vehicle status to which timeline steps are complete
-function getTimelineState(status: string): {
-  bookingConfirmed: "done" | "current" | "pending"
-  agentAssigned: "done" | "current" | "pending"
-  collected: "done" | "current" | "pending"
-  paymentReleased: "done" | "current" | "pending"
-} {
-  switch (status) {
-    case "INSPECTION_SCHEDULED":
-      return {
-        bookingConfirmed: "current",
-        agentAssigned: "pending",
-        collected: "pending",
-        paymentReleased: "pending",
-      }
-    case "UNDER_ASSESSMENT":
-      return {
-        bookingConfirmed: "done",
-        agentAssigned: "current",
-        collected: "pending",
-        paymentReleased: "pending",
-      }
-    case "OFFER_SENT":
-    case "ACCEPTED":
-      return {
-        bookingConfirmed: "done",
-        agentAssigned: "done",
-        collected: "current",
-        paymentReleased: "pending",
-      }
-    case "PAID":
-      return {
-        bookingConfirmed: "done",
-        agentAssigned: "done",
-        collected: "done",
-        paymentReleased: "done",
-      }
-    default:
-      return {
-        bookingConfirmed: "current",
-        agentAssigned: "pending",
-        collected: "pending",
-        paymentReleased: "pending",
-      }
-  }
-}
-
-function TimelineItem({
-  label,
-  description,
-  tag,
-  tagColor,
-  state,
-  isLast,
-}: {
-  label: string
-  description: string
-  tag: string
-  tagColor: string
-  state: "done" | "current" | "pending"
-  isLast: boolean
-}) {
-  return (
-    <div className="flex gap-3">
-      <div className="flex flex-col items-center">
-        <div
-          className={`w-5 h-5 rounded-full flex items-center justify-center flex-shrink-0 transition-all ${
-            state === "done"
-              ? "bg-green-500"
-              : state === "current"
-              ? "bg-[#E8A020]"
-              : "bg-muted border-2 border-border"
-          }`}
-        >
-          {state === "done" ? (
-            <svg width="8" height="7" viewBox="0 0 8 7" fill="none">
-              <path
-                d="M1 3.5L3 5.5L7 1"
-                stroke="white"
-                strokeWidth="1.5"
-                strokeLinecap="round"
-              />
-            </svg>
-          ) : state === "current" ? (
-            <div className="w-2 h-2 rounded-full bg-white animate-pulse" />
-          ) : null}
-        </div>
-        {!isLast && (
-          <div
-            className={`w-px flex-1 mt-1 ${
-              state === "done" ? "bg-green-200" : "bg-border"
-            }`}
-          />
-        )}
-      </div>
-      <div className={`pb-4 ${state === "pending" ? "opacity-40" : ""}`}>
-        <p
-          className={`text-sm font-bold ${
-            state === "current" ? "text-[#E8A020]" : "text-foreground"
-          }`}
-        >
-          {label}
-        </p>
-        <p className="text-xs text-muted-foreground mt-0.5">{description}</p>
-        <span
-          className={`inline-block text-[10px] border border-[#E8A020] bg-[#E8A02040] text-[#D4900A] font-bold px-2 py-0.5 rounded-full mt-1.5 ${tagColor}`}
-        >
-          {tag}
-        </span>
-      </div>
-    </div>
-  )
-}
-
-
-
-
-
-
-
-
-
 
 export default function FinalStep() {
-  const router = useRouter()
-  const { id } = useParams<{ id: string }>()
+  const router = useRouter();
+  const { id } = useParams<{ id: string }>();
 
-  const {
-    offer,
-    collectionDate,
-    timeSlot,
-    collectionAddress,
-    bookingReference,
-    bankName,
-    reset,
-  } = useOfferStore()
+  const { reset } = useOfferStore();
 
   const { data, loading } = useQuery(GetSingleUserVehicleDocument, {
     variables: { vehicleId: id },
     skip: !id,
     fetchPolicy: "network-only",
     pollInterval: 60000, // poll every 60s to update timeline
-  })
+  });
 
-  const vehicle = data?.getSingleUserVehicle
+  const vehicle = data?.getSingleUserVehicle;
 
-// final step component isnt complete, the setSchedule mutation does not set the vehicle booking reference,
-//  it also does not set the schedule date and time for pickup, 
-// no email sent to user lol
-  // console.log(vehicle);
-  
-
-  // Resolve data — backend is source of truth, store is fallback
-  const resolvedStatus = vehicle?.status ?? "INSPECTION_SCHEDULED"
-  const resolvedCollectionDate = vehicle?.scheduledAt
-    ? vehicle.scheduledAt.split("T")[0]
-    : collectionDate
-  const resolvedOffer = vehicle?.offer ?? offer
-  const resolvedBookingRef =
-    bookingReference ?? `RVL-${new Date().getFullYear()}-PENDING`
+  const resolvedStatus = vehicle?.status;
+  const resolvedOffer = vehicle?.offer ?? "UNDER REVIEW";
+  const resolvedBookingRef = vehicle?.bookingReference;
+  const timeSlot = vehicle?.timeSlot;
+  const bankName = vehicle?.bankName;
+  const collectionAddress = vehicle?.collectionAddress;
+  const collectionDate = vehicle?.collectionDate;
 
   // Get timeline state from vehicle status
-  const timeline = getTimelineState(resolvedStatus)
+  const timeline = getTimelineState(resolvedStatus);
 
   const TIMELINE_ITEMS = [
     {
       key: "bookingConfirmed" as const,
       label: "Booking confirmed",
-      description: `Reference ${resolvedBookingRef}. Confirmation SMS sent to your registered number.`,
+      description: `Reference ${resolvedBookingRef}. Confirmation E-Mail sent to your email address.`,
       tag: "Now",
       tagColor: "",
     },
     {
       key: "agentAssigned" as const,
-      label: "Agent assigned + notified",
+      label: "Inspector assigned + notified",
       description:
         "You'll receive their name, photo, and live tracking link the morning before pickup",
-      tag: formatDate(resolvedCollectionDate),
+      tag: formatDate(collectionDate),
       tagColor: "",
     },
     {
@@ -209,31 +77,25 @@ export default function FinalStep() {
       label: "Collection at your address",
       description:
         "Agent inspects and signs off. You sign a one-page digital transfer document on their tablet.",
-      tag: `${formatDate(resolvedCollectionDate)}, ${timeSlot}`,
+      tag: `${formatDate(collectionDate)}, ${timeSlot}`,
       tagColor: "",
     },
     {
       key: "paymentReleased" as const,
       label: "Payment released",
-      description: `${formatNaira(resolvedOffer)} sent to ${
+      description: `Funds sent to ${
         bankName || "your bank"
       } after collection confirmation`,
-      tag: `${formatDate(resolvedCollectionDate)}, 2 hrs after`,
+      tag: `${formatDate(collectionDate)}, 2 hrs after`,
       tagColor: "",
     },
-  ]
+  ];
   function handleDone() {
-    router.push("/home")
-    reset()
+    router.replace("/home");
+    reset();
   }
 
-  if (loading && !vehicle) {
-    return (
-      <div className="min-h-[60vh] flex items-center justify-center">
-        <div className="w-6 h-6 rounded-full border-2 border-[#E8A020] border-t-transparent animate-spin" />
-      </div>
-    )
-  }
+  if (loading && !vehicle) return <Loader />;
 
   return (
     <div className="font-cabinet space-y-6 py-4">
@@ -252,7 +114,7 @@ export default function FinalStep() {
       <div className="flex items-center gap-2 bg-[#FFF7E4] border border-[#E8A020]/30 px-4 py-3 rounded-full">
         <Calendar color="#F59E0B" size={20} />
         <span className="text-xs font-bold text-[#E8A020]">
-          {formatDate(resolvedCollectionDate)} · {timeSlot}
+          {formatDate(collectionDate)} · {timeSlot}
         </span>
       </div>
 
@@ -262,11 +124,13 @@ export default function FinalStep() {
           <p className="text-xs font-bold uppercase text-white">
             Booking Reference
           </p>
-          <p className="text-xs font-semibold text-white">{resolvedBookingRef}</p>
+          <p className="text-xs font-semibold text-white">
+            {resolvedBookingRef}
+          </p>
         </div>
         <div className="py-3">
           {[
-            { label: "Collection date", value: formatDate(resolvedCollectionDate) },
+            { label: "Collection date", value: formatDate(collectionDate) },
             { label: "Time window", value: timeSlot || "—" },
             { label: "Cash payout", value: formatNaira(resolvedOffer) },
           ].map((item) => (
@@ -296,16 +160,16 @@ export default function FinalStep() {
         </span>
         <div>
           <p className="font-bold text-[#707974]">Pickup Address</p>
-          <p className="text-sm font-bold">
-            {collectionAddress || "—"}
-          </p>
+          <p className="text-sm font-bold">{collectionAddress || "—"}</p>
         </div>
       </div>
 
       {/* Timeline — driven by vehicle status */}
       <div className="space-y-3">
         <div className="flex items-center justify-between">
-          <p className="text-sm font-bold text-foreground">What happens next?</p>
+          <p className="text-sm font-bold text-foreground">
+            What happens next?
+          </p>
           {/* Live indicator — shows we're polling */}
           <div className="flex items-center gap-1.5">
             <div className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse" />
@@ -334,7 +198,10 @@ export default function FinalStep() {
         <p className="text-sm text-muted-foreground">
           By proceeding, you agreed to Revela's Terms of Sale. This offer is
           legally binding once both parties sign at pickup. Questions?{" "}
-          <Link className="font-bold text-[#D4900A]" href="mailto:support@revelaafrica.com">
+          <Link
+            className="font-bold text-[#D4900A]"
+            href="mailto:support@revelaafrica.com"
+          >
             support@revelaafrica.com
           </Link>
         </p>
@@ -347,5 +214,5 @@ export default function FinalStep() {
         Back to Home
       </button>
     </div>
-  )
+  );
 }

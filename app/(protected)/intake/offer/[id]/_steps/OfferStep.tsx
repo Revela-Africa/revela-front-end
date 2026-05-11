@@ -1,140 +1,215 @@
-"use client";
+"use client"
 
-import { Button } from "@/components/ui/button";
-import { useOfferStore } from "@/features/offer/store/useOfferStore";
-import { Info, Landmark, LayoutDashboard, TrendingDown, Zap } from "lucide-react";
-import { useRouter, useParams } from "next/navigation";
+import { useState } from "react"
+import { useRouter, useParams } from "next/navigation"
+import { useMutation } from "@apollo/client/react"
+import { useOfferStore } from "@/features/offer/store/useOfferStore"
+import {
+  AcceptOfferDocument,
+  RejectOfferDocument,
+} from "@/graphql/generated/graphql"
+import { appToast } from "@/lib/toast"
+import {
+  AlertTriangle,
+  CheckCircle2,
+  XCircle,
+  Loader2,
+  Zap,
+  LayoutDashboard,
+} from "lucide-react"
 
 function formatNaira(amount: number) {
-  return `₦${amount.toLocaleString()}`;
+  return `₦${amount.toLocaleString()}`
 }
 
+type ConfirmAction = "accept" | "reject" | null
+
 export default function OfferStep() {
-  const { tav, min, max, setStep, setOffer } = useOfferStore();
-  const router = useRouter();
-  const { id } = useParams<{ id: string }>();
+  const { offer, reset } = useOfferStore()
+  const router = useRouter()
+  const { id } = useParams<{ id: string }>()
+  const [confirmAction, setConfirmAction] = useState<ConfirmAction>(null)
 
-  // Stub — admin would set this, for now 82% of TAV
-  const cashOffer = tav ? Math.round(tav * 0.82) : 0;
-  const liquidityAdjustment = tav ? tav - cashOffer : 0;
+  const cashOffer = offer ?? 0
 
-  function handleAccept() {
-    // --- STUBBED: acceptOffer(id) mutation goes here ---
-    console.log("Accepting offer:", { id, cashOffer });
-    // ---------------------------------------------------
-    setOffer(cashOffer);
-    setStep(3);
+  const [acceptOffer, { loading: accepting }] = useMutation(
+    AcceptOfferDocument,
+    {
+      onCompleted: () => {
+        appToast.success({
+          title: "Offer accepted",
+          description: "Payment will be processed within 24 hours",
+        })
+        reset()
+        router.push("/home")
+      },
+      onError: (err) => {
+        appToast.error({
+          title: "Failed to accept offer",
+          description: err.message,
+        })
+      },
+    }
+  )
+
+  const [rejectOffer, { loading: rejecting }] = useMutation(
+    RejectOfferDocument,
+    {
+      onCompleted: () => {
+        appToast.success({
+          title: "Offer rejected",
+          description: "We've noted your decision",
+        })
+        reset()
+        router.push("/home")
+      },
+      onError: (err) => {
+        appToast.error({
+          title: "Failed to reject offer",
+          description: err.message,
+        })
+      },
+    }
+  )
+
+  async function handleConfirm() {
+    if (!confirmAction) return
+
+    if (confirmAction === "accept") {
+      await acceptOffer({ variables: { id } })
+    } else {
+      await rejectOffer({ variables: { id } })
+    }
+
+    setConfirmAction(null)
   }
 
-
-
-
-
+  const isLoading = accepting || rejecting
 
   return (
-    <div className="font-cabinet space-y-6 py-4">
-      <div>
-        <p className="text-sm text-muted-foreground uppercase tracking-wide">
-          Available Offer
-        </p>
-        <h1 className="text-3xl font-extrabold text-foreground mt-1">
-          Your Cash Offer
-        </h1>
-         <p className="text-xs text-muted-foreground mt-1">
-          This is your final offer based on physical inspection.
-        </p>
-      </div>
-
-
-      <div className=" rounded-2xl  space-y-4">
-        <div className="bg-white border-[#E8A02040] border p-7 flex flex-col items-center justify-center rounded-[12px]">
-          <p className="text-sm text-muted-foreground text-center">
-            Liquid Balance Payable
+    <>
+      <div className="mx-auto w-full space-y-6 py-6 font-cabinet">
+        {/* Header */}
+        <div className="text-center">
+          <p className="text-xs font-semibold uppercase tracking-[0.2em] text-[#6A6A6A]">
+            Final Offer
           </p>
-          <p className="text-[48px] text-center   font-medium text-[#D4900A] mt-1">
+          <h1 className="mt-2 text-3xl font-extrabold tracking-tight text-[#171D17]">
+            Your Cash Offer
+          </h1>
+          <p className="mt-2 text-sm text-[#6A6A6A]">
+            This offer is valid for 72 hours
+          </p>
+        </div>
+
+        {/* Offer amount — big and bold */}
+        <div className="rounded-3xl border border-[#E7E1D8] bg-white p-8 text-center">
+          <p className="text-sm font-medium text-[#6A6A6A]">Cash Offer</p>
+          <p className="mt-3 text-4xl font-extrabold tracking-tight text-[#E8A020]">
             {formatNaira(cashOffer)}
           </p>
-
- 
-          <div className="flex items-center justify-center gap-2 bg-[#FFF7E4] border border-[#E8A020]/30 px-4 py-2 rounded-full">
-            <span className="text-[#F59E0B]">
-              <Zap fill="#F59E0B" size={10} />
-            </span>
-            <span className="text-xs font-bold text-[#E8A020]">
-              VALID FOR 72 HOURS · EXPIRES FRI 28 MAR, 9:54 AM
+          <div className="mt-5 inline-flex items-center gap-2 rounded-full border border-[#E8A020]/30 bg-[#FFF7E4] px-4 py-2">
+            <Zap fill="#E8A020" size={12} className="text-[#E8A020]" />
+            <span className="text-xs font-bold uppercase tracking-wide text-[#E8A020]">
+              Valid for 72 hours
             </span>
           </div>
         </div>
 
-        <div className="space-y-2 pt-2 ">
-          <p className="text-xs font-bold uppercase tracking-widest text-muted-foreground">
-            Valuation Breakdown
-          </p>
+        {/* Actions */}
+        <div className="space-y-3">
+          <button
+            onClick={() => setConfirmAction("accept")}
+            className="flex h-14 w-full items-center justify-center rounded-2xl bg-[#E8A020] text-sm font-bold text-white transition-all hover:bg-[#d4900a] active:scale-[0.98]"
+          >
+            Accept Cash Offer
+          </button>
 
-          <div className="border border-[#BFC9C31A] rounded-lg overflow-hidden flex flex-col h-50">
-            <div className="flex flex-1 items-center justify-between p-5   border-[#BFC9C31A] border">
-              <div className="flex items-center justify-center gap-2">
-                <span className="bg-white p-3 rounded-[8px]">
-                  <Landmark color="#D4900A" />
-                </span>
-                <div>
-                  <p className="text-sm font-bold text-foreground">
-                    Total Asset Value <br />
-                    (TAV)
-                  </p>
-                  <p className="text-xs text-muted-foreground">
-                    Verified AI valuation
-                  </p>
-                </div>
-              </div>
-              <p className=" font-bold text-[#E8A020]">
-                {tav ? formatNaira(tav) : "—"}
-              </p>
-            </div>
-            <div className="flex flex-1 items-center justify-between p-5   bg-[#FFFFFF80]">
-              <div className="flex items-center gap-2">
-                <span className="bg-white p-3 rounded-[8px]">
-                  <TrendingDown color="#BA1A1A" />
-                </span>
-                <div>
-                  <p className="text-sm font-bold text-foreground">
-                    Cash Liquidity <br /> Adjustment
-                  </p>
-                  <p className="text-xs text-[#BA1A1A]">18% FLAT RATE</p>
-                </div>
-              </div>
-              <p className=" font-bold text-[#BA1A1A]">
-                -{formatNaira(liquidityAdjustment)}
-              </p>
-            </div>
-          </div>
-        </div>
+          <button
+            onClick={() => setConfirmAction("reject")}
+            className="flex h-12 w-full items-center justify-center gap-2 rounded-2xl border border-[#E7E1D8] text-sm font-semibold text-[#171D17] transition-colors hover:bg-[#F7F2EB]"
+          >
+            Decline Offer
+          </button>
 
-        <div className="p-4 rounded-xl flex gap-x-4 bg-[#FFF7E4] border border-[#E8A02040]  space-y-2">
-          <Info size={20} color="#D4900A" />
-
-          <div className="max-w-65 ">
-            <p className="text-sm text-muted-foreground">
-              Our cash offers are calculated at <span className="text-[#D4900A] font-bold">82%</span> of your Total Asset Value
-              (TAV) to provide immediate liquidity within <span className="text-[#D4900A] font-bold">24 hours</span>.
-            </p>
-          </div>
+          <button
+            onClick={() => router.push("/home")}
+            className="flex h-10 w-full items-center justify-center gap-2 rounded-2xl text-sm text-[#6A6A6A] transition-colors hover:text-[#171D17]"
+          >
+            <LayoutDashboard size={14} />
+            Back to Dashboard
+          </button>
         </div>
       </div>
 
-      <Button
-        onClick={handleAccept}
-        className="w-full bg-[#E8A020] text-white font-bold py-4 normal-case rounded-xl mb-4"
-      >
-        Accept Cash Offer
-      </Button>
+      {/* Confirmation modal */}
+      {confirmAction && (
+        <div className="fixed inset-0 z-50 flex items-end justify-center bg-[#171D17]/50 p-4 backdrop-blur-sm sm:items-center">
+          <div className="w-full max-w-sm rounded-3xl border border-[#E7E1D8] bg-white p-6">
+            {/* Icon */}
+            <div className="flex justify-center">
+              <div
+                className={`flex h-16 w-16 items-center justify-center rounded-2xl ${
+                  confirmAction === "accept" ? "bg-[#FFF7E4]" : "bg-red-50"
+                }`}
+              >
+                {confirmAction === "accept" ? (
+                  <CheckCircle2 size={32} className="text-[#E8A020]" />
+                ) : (
+                  <XCircle size={32} className="text-red-500" />
+                )}
+              </div>
+            </div>
 
-      <Button
-        onClick={() => router.push("/home")}
-        className="w-full flex items-center justify-center gap-2 py-4 text-black shadow-none bg-[#E8A02040] hover:bg-[#E8A02040] hover:shadow-none normal-case rounded-xl border border-border text-sm font-semibold "
-      >
-       <LayoutDashboard size={15}/> Back to Dashboard
-      </Button>
-    </div>
-  );
+            {/* Content */}
+            <div className="mt-5 text-center">
+              <h2 className="text-xl font-extrabold text-[#171D17]">
+                {confirmAction === "accept"
+                  ? "Accept this offer?"
+                  : "Decline this offer?"}
+              </h2>
+              <p className="mt-2 text-sm leading-relaxed text-[#6A6A6A]">
+                {confirmAction === "accept"
+                  ? `You're about to accept ${formatNaira(cashOffer)}. Payment will be processed within 24 hours of vehicle collection.`
+                  : "You're about to decline this offer. This action is permanent and cannot be withdrawn."}
+              </p>
+              <div className="mt-4 inline-flex items-center gap-1.5 rounded-full bg-[#FFF7E4] px-3 py-1.5">
+                <AlertTriangle size={12} className="text-[#E8A020]" />
+                <p className="text-xs font-bold text-[#E8A020]">
+                  This action is permanent
+                </p>
+              </div>
+            </div>
+
+            {/* Actions */}
+            <div className="mt-6 flex gap-3">
+              <button
+                onClick={() => setConfirmAction(null)}
+                disabled={isLoading}
+                className="flex-1 rounded-2xl border border-[#E7E1D8] py-3 text-sm font-bold text-[#171D17] transition-colors hover:bg-[#F7F2EB] disabled:opacity-40"
+              >
+                Go Back
+              </button>
+              <button
+                onClick={handleConfirm}
+                disabled={isLoading}
+                className={`flex flex-1 items-center justify-center gap-2 rounded-2xl py-3 text-sm font-bold text-white transition-all active:scale-[0.98] disabled:opacity-40 ${
+                  confirmAction === "accept"
+                    ? "bg-[#E8A020] hover:bg-[#d4900a]"
+                    : "bg-red-500 hover:bg-red-600"
+                }`}
+              >
+                {isLoading && <Loader2 size={14} className="animate-spin" />}
+                {isLoading
+                  ? "Processing..."
+                  : confirmAction === "accept"
+                  ? "Yes, Accept"
+                  : "Yes, Decline"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+    </>
+  )
 }

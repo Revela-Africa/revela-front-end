@@ -201,7 +201,7 @@ export default function IntakeStep4() {
               onClick={onSubmit}
               disabled={isLoading || !allComplete}
               className="w-full text-white"
-              loading ={isLoading}
+              loading={isLoading}
             >
               Done: Start Analysis
             </Button>

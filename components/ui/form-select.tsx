@@ -22,14 +22,14 @@ type Option = {
 type FormSelectProps<T extends FieldValues> = {
   name: Path<T>;
   id?: string;
-  control: Control<T>;
+  control?: Control<T>;
   label?: string;
   required?: boolean;
   placeholder?: string;
   error?: string;
   options: Option[];
-  onValueChange?: (value: string ) => void;
-    disabled?: boolean
+  onValueChange?: (value: string) => void;
+  disabled?: boolean;
 };
 
 function FormSelect<T extends FieldValues>({
@@ -52,7 +52,7 @@ function FormSelect<T extends FieldValues>({
           {label && (
             <label
               htmlFor={id}
-              className="flex gap-x-2 text-[#3A3A3A] tracking-[1.2px] text-sm mb-0.5"
+              className="flex gap-x-2 text-[#3A3A3A] tracking-[1.2px] text-xs mb-0.5"
             >
               {label}
             </label>

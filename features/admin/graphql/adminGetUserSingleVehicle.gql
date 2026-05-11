@@ -1,0 +1,51 @@
+query AdminGetUserSingleVehicle($vehicleId: String!) {
+  adminGetUserSingleVehicle(vehicleId: $vehicleId) {
+    id
+    status
+    make
+    model
+    year
+    mileage
+    condition
+    vin
+    tav
+    min
+    max
+    offer
+    serviceHistory
+    engineType
+    transmission
+    drivetrain
+    structuralDamage
+    mechanicalOverhaul
+    userId
+    agentName
+    agentPhone
+    scheduledAt
+    collectionDate
+    timeSlot
+    bookingReference
+    inspectorId
+    assignedToInspector
+    expiresAt
+    region
+     reevaluationTav
+    reevaluationGrade
+    inspectionReport {
+      condition
+      mileage
+      structuralDamage
+      mechanicalOverhaul
+      serviceHistory
+      drivetrain
+      engineType
+      transmission
+      notes
+      photoUrls
+    }
+    imageUrls {
+      imageUrl
+      angle
+    }
+  }
+}
