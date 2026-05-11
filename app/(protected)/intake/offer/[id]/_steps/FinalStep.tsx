@@ -23,6 +23,7 @@ function formatDate(dateStr: string | null | undefined): string {
 }
 
 function formatNaira(amount: number | null | string): string {
+  if (typeof amount === "string") return amount;
   if (!amount) return "—";
   return `₦${amount.toLocaleString()}`;
 }

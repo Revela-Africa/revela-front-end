@@ -6,7 +6,7 @@ import VehicleCarousel from "../../../_components/VehicleCarousel";
 import Link from "next/link";
 import { TextField } from "@/components/ui/textfield";
 import { Button } from "@/components/ui/button";
-import { ChevronRightIcon, Info } from "lucide-react";
+import { Info } from "lucide-react";
 import {
   Select,
   SelectContent,
@@ -69,7 +69,7 @@ export default function ConfirmStep() {
               value: `${Number(mileage).toLocaleString()} KM`,
             },
             { label: "Condition Grade", value: condition },
-            { label: "Assessed Value", value: `₦${tav?.toLocaleString()}` },
+            { label: "Assessed Value.  ( Not final )", value: `₦${tav?.toLocaleString()}` },
           ].map((item) => (
             <div
               key={item.label}
@@ -102,7 +102,7 @@ export default function ConfirmStep() {
           onValueChange={(value) => setRegion(value || "")}
         >
           <SelectTrigger className="w-full">
-            <SelectValue placeholder="Select region" />
+            <SelectValue placeholder="Select State" />
           </SelectTrigger>
 
           <SelectContent>

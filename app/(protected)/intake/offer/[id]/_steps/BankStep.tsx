@@ -90,7 +90,7 @@ export default function BankStep() {
 
           <div className="max-w-65 ">
             <p className="text-sm text-muted-foreground">
-              Funds are typically cleared{" "}
+              Funds are typically disbursed{" "}
               <span className="text-[#D4900A] font-bold">within 2 hours </span>
               of pickup confirmation. Revela ensures secure transit and
               bank-grade encryption for all financial transactions.
@@ -100,6 +100,7 @@ export default function BankStep() {
 
         <Button
           type="submit"
+          loading={isResolving}
           className="w-full bg-[#E8A020] text-white normal-case font-bold py-4 rounded-xl hover:opacity-90 transition-opacity flex items-center justify-center gap-2"
         >
           Verify & Complete →

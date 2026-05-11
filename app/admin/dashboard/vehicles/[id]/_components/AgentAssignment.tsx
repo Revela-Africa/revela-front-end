@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { MapPin, Loader2, UserCheck, AlertTriangle } from "lucide-react";
 
 interface Inspector {
@@ -16,10 +16,10 @@ interface Inspector {
 interface Props {
   vehicleId: string;
   vehicleRegion: string | null;
-  vehicleStatus: string; // ← new
-  currentAgentName: string | null;
-  currentAgentPhone: string | null;
+  vehicleStatus: string;
+  currentInspectorId: string | null;
   inspectors: Inspector[];
+  allInspectors?: Inspector[];
   inspectorsLoading: boolean;
   showAllInspectors: boolean;
   onShowAll: (val: boolean) => void;
@@ -27,7 +27,6 @@ interface Props {
   assigning: boolean;
 }
 
-// Statuses where assignment should be disabled
 const ASSIGNMENT_LOCKED_STATUSES = [
   "SUBMITTED",
   "PENDING_REVIEW",
@@ -39,12 +38,11 @@ const ASSIGNMENT_LOCKED_STATUSES = [
 ];
 
 export function AgentAssignment({
-  vehicleId,
   vehicleRegion,
   vehicleStatus,
-  currentAgentName,
-  currentAgentPhone,
+  currentInspectorId,
   inspectors,
+  allInspectors,
   inspectorsLoading,
   showAllInspectors,
   onShowAll,
@@ -59,11 +57,17 @@ export function AgentAssignment({
   );
 
   const isLocked = ASSIGNMENT_LOCKED_STATUSES.includes(vehicleStatus);
-  const isReassignment = !!currentAgentName;
+
+  // Derive current inspector from the array using the ID
+  const currentInspector = useMemo(() => {
+    if (!currentInspectorId) return null;
+    return allInspectors?.find((i) => i.id === currentInspectorId) ?? null;
+  }, [currentInspectorId, allInspectors]);
+
+  const isReassignment = !!currentInspector;
 
   function handleSelectInspector(inspector: Inspector) {
     if (isReassignment) {
-      // Show confirmation modal before reassigning
       setPendingInspector(inspector);
       setShowReassignConfirm(true);
     } else {
@@ -88,62 +92,66 @@ export function AgentAssignment({
 
   return (
     <>
-      <div className="bg-white rounded-2xl border border-border p-4 space-y-3">
+      <div className="rounded-2xl border border-border bg-white p-4 space-y-3">
         <div className="flex items-center justify-between">
           <h3 className="text-sm font-bold text-foreground">
-            Assigned Inspector
+            Assign Inspector
           </h3>
-
           {isLocked ? (
-            <span className="text-xs text-muted-foreground bg-muted px-2 py-1 rounded-lg">
+            <span className="rounded-lg bg-muted px-2 py-1 text-xs text-muted-foreground">
               Locked
             </span>
           ) : (
             <button
               onClick={() => setIsOpen(!isOpen)}
-              className="text-xs text-[#E8A020] font-bold hover:underline"
+              className="text-xs font-bold text-[#E8A020] hover:underline"
             >
               {isReassignment ? "Reassign" : "Assign"}
             </button>
           )}
         </div>
 
-        {/* Locked reason */}
         {isLocked && (
           <p className="text-xs text-muted-foreground">
-            Inspector assignment is locked untill pickup is scheduled.
+            Inspector assignment is locked until pickup is scheduled.
           </p>
         )}
 
-        {/* Current agent */}
-        {currentAgentName && !isOpen && (
-          <div className="flex items-center gap-3 p-3 rounded-xl bg-[#FFF7E4] border border-[#E8A020]/20">
-            <div className="w-9 h-9 rounded-full bg-[#E8A020] flex items-center justify-center shrink-0">
+        {/* Current inspector — only show when panel is closed */}
+        {isReassignment && !isOpen && currentInspector && (
+          <div className="flex items-center gap-3 rounded-xl border border-[#E8A020]/20 bg-[#FFF7E4] p-3">
+            <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-[#E8A020]">
               <span className="text-xs font-bold text-white">
-                {currentAgentName
+                {currentInspector.fullName
                   .split(" ")
                   .map((n) => n[0])
                   .join("")}
               </span>
             </div>
-            <div>
-              <p className="text-sm font-bold text-foreground">
-                {currentAgentName}
+            <div className="min-w-0 flex-1">
+              <p className="truncate text-sm font-bold text-foreground">
+                {currentInspector.fullName}
               </p>
-              {currentAgentPhone && (
+              {currentInspector.phone && (
                 <p className="text-xs text-muted-foreground">
-                  {currentAgentPhone}
+                  {currentInspector.phone}
                 </p>
               )}
             </div>
-            <UserCheck size={16} className="text-green-500 ml-auto" />
+            <UserCheck size={16} className="ml-auto text-green-500" />
           </div>
+        )}
+
+        {/* No inspector assigned yet */}
+        {!isReassignment && !isOpen && !isLocked && (
+          <p className="text-xs text-muted-foreground">
+            No inspector assigned yet.
+          </p>
         )}
 
         {/* Assignment panel */}
         {isOpen && !isLocked && (
           <div className="space-y-3">
-            {/* Region toggle */}
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-1.5">
                 <MapPin size={12} className="text-[#E8A020]" />
@@ -155,64 +163,60 @@ export function AgentAssignment({
               </div>
               <button
                 onClick={() => onShowAll(!showAllInspectors)}
-                className="text-xs text-[#E8A020] font-bold hover:underline"
+                className="text-xs font-bold text-[#E8A020] hover:underline"
               >
                 {showAllInspectors ? "Regional only" : "Show all"}
               </button>
             </div>
 
-            {/* Reassignment notice */}
-            {isReassignment && (
-              <div className="flex items-center gap-2 p-2 rounded-lg bg-orange-50 border border-orange-200">
-                <AlertTriangle size={12} className="text-orange-600 shrink-0" />
+            {isReassignment && currentInspector && (
+              <div className="flex items-center gap-2 rounded-lg border border-orange-200 bg-orange-50 p-2">
+                <AlertTriangle size={12} className="shrink-0 text-orange-600" />
                 <p className="text-xs text-orange-700">
-                  Selecting an inspector will prompt reassignment confirmation
+                  Currently assigned to{" "}
+                  <span className="font-bold">{currentInspector.fullName}</span>
+                  . Selecting another inspector will prompt reassignment
+                  confirmation.
                 </p>
               </div>
             )}
 
-            {/* Inspector list */}
             {inspectorsLoading ? (
               <div className="flex items-center justify-center py-6">
                 <Loader2 size={20} className="animate-spin text-[#E8A020]" />
               </div>
             ) : inspectors.length === 0 ? (
-              <div className="py-4 text-center space-y-2">
+              <div className="space-y-2 py-4 text-center">
                 <p className="text-sm text-muted-foreground">
-                  No inspectors in this region
+                  No inspectors found
                 </p>
                 {!showAllInspectors && (
                   <button
                     onClick={() => onShowAll(true)}
-                    className="text-xs text-[#E8A020] font-bold hover:underline"
+                    className="text-xs font-bold text-[#E8A020] hover:underline"
                   >
                     Show all inspectors
                   </button>
                 )}
               </div>
             ) : (
-              <div className="space-y-2 max-h-64 overflow-y-auto">
+              <div className="max-h-64 space-y-2 overflow-y-auto">
                 {inspectors.map((inspector) => {
-                  // Explicitly check for true — null and false both = unavailable
-                  const isAvailable = inspector.isAvailable === true;
                   const isSelected = selectedId === inspector.id;
+                  const isAvailable = inspector.isAvailable === true;
+                  const isCurrent = currentInspector?.id === inspector.id;
 
                   return (
                     <button
                       key={inspector.id}
-                      onClick={() => {
-                        if (!isAvailable) return; // ← block click entirely
-                        handleSelectInspector(inspector);
-                      }}
-                      className={`w-full flex items-center gap-3 p-3 rounded-xl border text-left transition-all ${
+                      onClick={() => handleSelectInspector(inspector)}
+                      className={`flex w-full cursor-pointer items-center gap-3 rounded-xl border p-3 text-left transition-all ${
                         isSelected
                           ? "border-[#E8A020] bg-[#FFF7E4]"
-                          : !isAvailable
-                            ? "border-border opacity-40 cursor-not-allowed pointer-events-none"
-                            : "border-border hover:bg-muted/30 cursor-pointer"
-                      }`}
+                          : "border-border hover:bg-muted/30"
+                      } ${isCurrent ? "ring-1 ring-[#E8A020]/30" : ""}`}
                     >
-                      <div className="w-8 h-8 rounded-full bg-[#E8A020]/20 flex items-center justify-center shrink-0">
+                      <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[#E8A020]/20">
                         <span className="text-xs font-bold text-[#E8A020]">
                           {inspector.fullName
                             .split(" ")
@@ -220,26 +224,30 @@ export function AgentAssignment({
                             .join("")}
                         </span>
                       </div>
-                      <div className="flex-1 min-w-0">
-                        <div className="flex items-center gap-2 flex-wrap">
-                          <p className="text-sm font-bold text-foreground truncate">
+                      <div className="min-w-0 flex-1">
+                        <div className="flex flex-wrap items-center gap-2">
+                          <p className="truncate text-sm font-bold text-foreground">
                             {inspector.fullName}
                           </p>
+                          {isCurrent && (
+                            <span className="shrink-0 rounded-full bg-[#E8A020] px-1.5 py-0.5 text-[10px] font-bold text-white">
+                              Current
+                            </span>
+                          )}
                           {inspector.isOutOfRegion && inspector.region && (
-                            <span className="text-[10px] font-bold text-orange-600 bg-orange-50 px-1.5 py-0.5 rounded-full shrink-0">
+                            <span className="shrink-0 rounded-full bg-orange-50 px-1.5 py-0.5 text-[10px] font-bold text-orange-600">
                               {inspector.region}
                             </span>
                           )}
-                          {/* Always show availability status clearly */}
-                          {isAvailable ? (
-                            <span className="text-[10px] font-bold text-green-600 bg-green-50 px-1.5 py-0.5 rounded-full shrink-0">
-                              Available
-                            </span>
-                          ) : (
-                            <span className="text-[10px] font-bold text-red-500 bg-red-50 px-1.5 py-0.5 rounded-full shrink-0">
-                              Unavailable
-                            </span>
-                          )}
+                          <span
+                            className={`shrink-0 rounded-full px-1.5 py-0.5 text-[10px] font-bold ${
+                              isAvailable
+                                ? "bg-green-50 text-green-600"
+                                : "bg-muted text-muted-foreground"
+                            }`}
+                          >
+                            {isAvailable ? "Available" : "Busy"}
+                          </span>
                         </div>
                         {inspector.phone && (
                           <p className="text-xs text-muted-foreground">
@@ -253,13 +261,13 @@ export function AgentAssignment({
               </div>
             )}
 
-            {/* Confirm assign (first time only) */}
+            {/* Confirm button — first assignment only */}
             {!isReassignment && (
               <div className="flex gap-2 pt-1">
                 <button
                   onClick={handleConfirmAssign}
                   disabled={!selectedId || assigning}
-                  className="flex-1 bg-[#E8A020] text-white text-sm font-bold py-2 rounded-lg disabled:opacity-40 flex items-center justify-center gap-2"
+                  className="flex flex-1 items-center justify-center gap-2 rounded-lg bg-[#E8A020] py-2 text-sm font-bold text-white disabled:opacity-40"
                 >
                   {assigning && <Loader2 size={14} className="animate-spin" />}
                   {assigning ? "Assigning..." : "Confirm"}
@@ -269,21 +277,20 @@ export function AgentAssignment({
                     setIsOpen(false);
                     setSelectedId(null);
                   }}
-                  className="flex-1 border border-border text-sm py-2 rounded-lg hover:bg-muted/30"
+                  className="flex-1 rounded-lg border border-border py-2 text-sm hover:bg-muted/30"
                 >
                   Cancel
                 </button>
               </div>
             )}
 
-            {/* Close button for reassignment flow */}
             {isReassignment && (
               <button
                 onClick={() => {
                   setIsOpen(false);
                   setSelectedId(null);
                 }}
-                className="w-full border border-border text-sm py-2 rounded-lg hover:bg-muted/30"
+                className="w-full rounded-lg border border-border py-2 text-sm hover:bg-muted/30"
               >
                 Cancel
               </button>
@@ -292,22 +299,22 @@ export function AgentAssignment({
         )}
       </div>
 
-      {/* ── Reassign confirmation modal ──────────────────── */}
-      {showReassignConfirm && pendingInspector && (
-        <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
-          <div className="bg-white rounded-2xl border border-border p-6 w-full max-w-sm space-y-4 shadow-xl">
+      {/* Reassign modal */}
+      {showReassignConfirm && pendingInspector && currentInspector && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
+          <div className="w-full max-w-sm space-y-4 rounded-2xl border border-border bg-white p-6 shadow-xl">
             <div className="flex items-start gap-3">
-              <div className="w-10 h-10 rounded-full bg-orange-100 flex items-center justify-center shrink-0">
+              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-orange-100">
                 <AlertTriangle size={20} className="text-orange-600" />
               </div>
               <div>
                 <h3 className="text-sm font-bold text-foreground">
                   Reassign Inspection?
                 </h3>
-                <p className="text-xs text-muted-foreground mt-1">
+                <p className="mt-1 text-xs text-muted-foreground">
                   You're about to transfer this inspection from{" "}
                   <span className="font-bold text-foreground">
-                    {currentAgentName}
+                    {currentInspector.fullName}
                   </span>{" "}
                   to{" "}
                   <span className="font-bold text-foreground">
@@ -318,9 +325,8 @@ export function AgentAssignment({
               </div>
             </div>
 
-            {/* Inspector preview */}
-            <div className="flex items-center gap-3 p-3 rounded-xl bg-muted/40 border border-border">
-              <div className="w-8 h-8 rounded-full bg-[#E8A020] flex items-center justify-center shrink-0">
+            <div className="flex items-center gap-3 rounded-xl border border-border bg-muted/40 p-3">
+              <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[#E8A020]">
                 <span className="text-xs font-bold text-white">
                   {pendingInspector.fullName
                     .split(" ")
@@ -344,7 +350,7 @@ export function AgentAssignment({
               <button
                 onClick={handleConfirmReassign}
                 disabled={assigning}
-                className="flex-1 bg-[#E8A020] text-white text-sm font-bold py-2.5 rounded-xl disabled:opacity-40 flex items-center justify-center gap-2"
+                className="flex flex-1 items-center justify-center gap-2 rounded-xl bg-[#E8A020] py-2.5 text-sm font-bold text-white disabled:opacity-40"
               >
                 {assigning && <Loader2 size={14} className="animate-spin" />}
                 {assigning ? "Reassigning..." : "Confirm Reassignment"}
@@ -354,7 +360,7 @@ export function AgentAssignment({
                   setShowReassignConfirm(false);
                   setPendingInspector(null);
                 }}
-                className="flex-1 border border-border text-sm py-2.5 rounded-xl hover:bg-muted/30"
+                className="flex-1 rounded-xl border border-border py-2.5 text-sm hover:bg-muted/30"
               >
                 Cancel
               </button>

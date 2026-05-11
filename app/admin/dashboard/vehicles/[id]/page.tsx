@@ -10,12 +10,16 @@ import { TAVBreakdown } from "./_components/TAVBreakdown";
 import { AgentAssignment } from "./_components/AgentAssignment";
 
 import { useMutation } from "@apollo/client/react";
-// import { SendOfferDocument, MarkAsPaidDocument } from "@/graphql/generated/graphql"
 import { appToast } from "@/lib/toast";
 import { StatusFlow } from "../_components/StatusFlow";
 import { ActivityLog } from "../_components/ActivityLog";
 import { STATUS_STYLES } from "@/shared/constants/status-styles";
 import { PendingReviewPanel } from "./_components/PendingReviewPanel";
+import {
+  MarkAsPaidDocument,
+  SendOfferDocument,
+} from "@/graphql/generated/graphql";
+import { Button } from "@/components/ui/button";
 
 export default function VehicleDetailPage() {
   const { id } = useParams<{ id: string }>();
@@ -29,6 +33,7 @@ export default function VehicleDetailPage() {
     vehicleLoading,
     vehicleError,
     inspectors,
+    allInspectors,
     inspectorsLoading,
     showAllInspectors,
     setShowAllInspectors,
@@ -37,69 +42,64 @@ export default function VehicleDetailPage() {
     refetch,
   } = useAdminVehicleDetail(id);
 
-// console.log(inspectors);
-
+  // console.log(vehicle);
 
   // Send offer mutation
-  // const [sendOffer, { loading: sendingOffer }] = useMutation(
-  //   SendOfferDocument,
-  //   {
-  //     onCompleted: () => {
-  //       appToast.success({
-  //         title: "Offer sent",
-  //         description: "User has been notified",
-  //       })
-  //       setIsSettingOffer(false)
-  //       setOfferAmount("")
-  //       refetch()
-  //     },
-  //     onError: (err) => {
-  //       appToast.error({
-  //         title: "Failed to send offer",
-  //         description: err.message,
-  //       })
-  //     },
-  //   }
-  // )
+  const [sendOffer, { loading: sendingOffer }] = useMutation(
+    SendOfferDocument,
+    {
+      onCompleted: () => {
+        appToast.success({
+          title: "Offer sent",
+          description: "User has been notified",
+        });
+        setIsSettingOffer(false);
+        setOfferAmount("");
+        refetch();
+      },
+      onError: (err) => {
+        appToast.error({
+          title: "Failed to send offer",
+          description: err.message,
+        });
+      },
+    },
+  );
 
   // Mark as paid mutation
-  // const [markAsPaid, { loading: markingPaid }] = useMutation(
-  //   MarkAsPaidDocument,
-  //   {
-  //     onCompleted: () => {
-  //       appToast.success({
-  //         title: "Marked as paid",
-  //         description: "Transaction logged",
-  //       })
-  //       refetch()
-  //     },
-  //     onError: (err) => {
-  //       appToast.error({
-  //         title: "Failed",
-  //         description: err.message,
-  //       })
-  //     },
-  //   }
-  // )
+  const [markAsPaid, { loading: markingPaid }] = useMutation(
+    MarkAsPaidDocument,
+    {
+      onCompleted: () => {
+        appToast.success({
+          title: "Marked as paid",
+          description: "Transaction logged",
+        });
+        refetch();
+      },
+      onError: (err) => {
+        appToast.error({
+          title: "Failed",
+          description: err.message,
+        });
+      },
+    },
+  );
 
-  // async function handleSendOffer() {
-  //   if (!offerAmount || !vehicle) return
-  //   await sendOffer({
-  //     variables: {
-  //       id: vehicle.id,
-  //       offerAmount: Number(offerAmount),
-  //       scheduledAt: new Date().toISOString(),
-  //       expiresAt: new Date(
-  //         Date.now() + 72 * 60 * 60 * 1000
-  //       ).toISOString(),
-  //     },
-  //   })
-  // }
+  async function handleSendOffer() {
+    if (!offerAmount || !vehicle) return;
+    await sendOffer({
+      variables: {
+        id: vehicle.id,
+        offer: Number(offerAmount),
+      },
+    });
+  }
 
-  // async function handleMarkAsPaid() {
-  //   if (!vehicle) return
-  //   await markAsPaid({ variables: { id: vehicle.id } })
-  // }
+  async function handleMarkAsPaid() {
+    if (!vehicle) return;
+    await markAsPaid({ variables: { id: vehicle.id } });
+  }
 
   // Loading state
   if (vehicleLoading && !vehicle) {
@@ -185,19 +185,26 @@ export default function VehicleDetailPage() {
               </div>
             </div>
           </div>
-
           {/* Photos */}
-          <PhotoStrip
-            images={vehicle.imageUrls}
-            imageUrls={vehicle.imageUrls?.map((img) => img.imageUrl) ?? []}
-          />
-
+          <PhotoStrip images={vehicle.imageUrls} />
           {/* TAV breakdown */}
+
           {vehicle.tav && (
             <TAVBreakdown
               tav={vehicle.tav}
-              min={vehicle.min || 0}
-              max={vehicle.max || 0}
+              min={vehicle.min}
+              max={vehicle.max}
+              condition={vehicle.condition}
+              mileage={vehicle.mileage}
+              structuralDamage={vehicle.structuralDamage}
+              mechanicalOverhaul={vehicle.mechanicalOverhaul}
+              serviceHistory={vehicle.serviceHistory}
+              drivetrain={vehicle.drivetrain}
+              engineType={vehicle.engineType}
+              transmission={vehicle.transmission}
+              reevaluationTav={vehicle.reevaluationTav}
+              reevaluationGrade={vehicle.reevaluationGrade}
+              inspectionReport={vehicle.inspectionReport}
             />
           )}
         </div>
@@ -212,10 +219,10 @@ export default function VehicleDetailPage() {
           <AgentAssignment
             vehicleId={vehicle.id}
             vehicleRegion={vehicle.region ?? null}
-            vehicleStatus={vehicle.status} // ← add this
-            currentAgentName={vehicle.agentName ?? null}
-            currentAgentPhone={vehicle.agentPhone ?? null}
+            vehicleStatus={vehicle.status}
+            currentInspectorId={vehicle.inspectorId ?? null}
             inspectors={inspectors}
+            allInspectors={allInspectors}
             inspectorsLoading={inspectorsLoading}
             showAllInspectors={showAllInspectors}
             onShowAll={setShowAllInspectors}
@@ -224,22 +231,42 @@ export default function VehicleDetailPage() {
           />
 
           {/* Final offer panel */}
+          {/* Final offer panel */}
           <div className="bg-white rounded-2xl border border-border p-4 space-y-3">
             <h3 className="text-sm font-bold text-foreground">Final Offer</h3>
 
+            {/* Offer already sent */}
             {vehicle.offer ? (
               <div className="space-y-2">
                 <p className="text-2xl font-bold text-[#E8A020]">
                   ₦{vehicle.offer.toLocaleString()}
                 </p>
-                <p className="text-xs text-green-600">✅ Offer sent to user</p>
+                {vehicle.status === "OFFER_SENT" && (
+                  <p className="text-xs text-muted-foreground">
+                    Awaiting user response
+                  </p>
+                )}
+                {vehicle.status === "ACCEPTED" && (
+                  <p className="text-xs text-green-600 font-bold">
+                    ✅ Accepted by user
+                  </p>
+                )}
+                {vehicle.status === "OFFER_REJECTED" && (
+                  <p className="text-xs text-red-500 font-bold">
+                    ❌ Rejected by user
+                  </p>
+                )}
               </div>
             ) : isSettingOffer ? (
               <div className="space-y-2">
                 <div>
                   <p className="text-xs text-muted-foreground mb-1">
-                    TAV Range: ₦{vehicle.min?.toLocaleString()} — ₦
-                    {vehicle.max?.toLocaleString()}
+                    Reevaluated TAV:{" "}
+                    <span className="font-bold text-[#E8A020]">
+                      {vehicle.reevaluationTav
+                        ? `₦${vehicle.reevaluationTav.toLocaleString()}`
+                        : "—"}
+                    </span>
                   </p>
                   <input
                     type="number"
@@ -250,55 +277,59 @@ export default function VehicleDetailPage() {
                   />
                 </div>
                 <div className="flex gap-2">
-                  <button
-                    // onClick={handleSendOffer}
-                    // disabled={!offerAmount || sendingOffer}
-                    className="flex-1 bg-[#E8A020] text-white text-sm font-bold py-2 rounded-lg disabled:opacity-40 flex items-center justify-center gap-2"
+                  <Button
+                    onClick={handleSendOffer}
+                    disabled={!offerAmount || sendingOffer}
+                    className="flex-1 bg-[#E8A020] text-white  normal-case text-sm font-bold py-2 rounded-lg disabled:opacity-40 flex items-center justify-center gap-2"
                   >
-                    {/* {sendingOffer && (
-                      <Loader2 size={12} className="animate-spin" />
-                    )}
-                    {sendingOffer ? "Sending..." : "Send Offer"} */}
-                  </button>
-                  <button
+                    Send Offer
+                  </Button>
+                  <Button
                     onClick={() => {
                       setIsSettingOffer(false);
                       setOfferAmount("");
                     }}
-                    className="flex-1 border border-border text-sm py-2 rounded-lg hover:bg-muted/30"
+                    className="flex-1 border border-border normal-case text-sm py-2 rounded-lg hover:bg-muted/30"
                   >
                     Cancel
-                  </button>
+                  </Button>
                 </div>
               </div>
             ) : (
-              <button
-                onClick={() => setIsSettingOffer(true)}
-                disabled={vehicle.status !== "UNDER_ASSESSMENT"}
-                className="w-full bg-[#E8A020] text-white font-bold py-3 rounded-xl text-sm disabled:opacity-40 disabled:cursor-not-allowed"
-              >
-                Set & Send Offer →
-              </button>
-            )}
+              <div className="space-y-2">
+                <button
+                  onClick={() => setIsSettingOffer(true)}
+                  disabled={
+                    !vehicle.inspectionReport || !vehicle.reevaluationTav
+                  }
+                  className="w-full bg-[#E8A020] text-white font-bold py-3 rounded-xl text-sm disabled:opacity-40 disabled:cursor-not-allowed"
+                >
+                  Set & Send Offer →
+                </button>
 
-            {vehicle.status !== "UNDER_ASSESSMENT" && !vehicle.offer && (
-              <p className="text-xs text-muted-foreground text-center">
-                Available after inspection is complete
-              </p>
+                {/* Clear reason why it's disabled */}
+                {!vehicle.inspectionReport && (
+                  <p className="text-xs text-muted-foreground text-center">
+                    Waiting for inspector to submit report
+                  </p>
+                )}
+                {vehicle.inspectionReport && !vehicle.reevaluationTav && (
+                  <p className="text-xs text-muted-foreground text-center">
+                    Waiting for AI reevaluation to complete
+                  </p>
+                )}
+              </div>
             )}
           </div>
-
           {/* Mark as paid */}
           {vehicle.status === "ACCEPTED" && (
             <button
-              // onClick={handleMarkAsPaid}
-              // disabled={markingPaid}
+              onClick={handleMarkAsPaid}
+              disabled={markingPaid}
               className="w-full bg-green-600 text-white font-bold py-3 rounded-xl text-sm flex items-center justify-center gap-2 disabled:opacity-40"
             >
-              {/* {markingPaid && (
-                <Loader2 size={14} className="animate-spin" />
-              )}
-              {markingPaid ? "Processing..." : "Advance to Payment →"} */}
+              {markingPaid && <Loader2 size={14} className="animate-spin" />}
+              {markingPaid ? "Processing..." : "Advance to Payment →"}
             </button>
           )}
 

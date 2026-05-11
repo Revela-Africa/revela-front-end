@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useMemo } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 
 interface DataPoint {
@@ -9,17 +9,32 @@ interface DataPoint {
   revenue: number
 }
 
-const DATA: DataPoint[] = [
-  { month: "Oct", value: 65, revenue: 31.3 },
-  { month: "Nov", value: 72, revenue: 34.7 },
-  { month: "Dec", value: 68, revenue: 32.8 },
-  { month: "Jan", value: 75, revenue: 36.1 },
-  { month: "Feb", value: 80, revenue: 38.5 },
-  { month: "Mar", value: 95, revenue: 48.2 },
-]
+function getLast6Months(): DataPoint[] {
+  const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
+  const data: DataPoint[] = []
+  
+  for (let i = 5; i >= 0; i--) {
+    const d = new Date(2026, 4 - i, 1) // May 2026 is month 4 (0-indexed)
+    const monthLabel = months[d.getMonth()]
+    
+    // Fake revenue that trends upward
+    const baseRevenue = 28 + (5 - i) * 3.5 + Math.random() * 4
+    const revenue = Math.round(baseRevenue * 10) / 10
+    
+    data.push({
+      month: monthLabel,
+      value: Math.min(95, 50 + (5 - i) * 8 + Math.floor(Math.random() * 10)),
+      revenue,
+    })
+  }
+  
+  return data
+}
 
 export function RevenueChart() {
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null)
+  
+  const DATA = useMemo(() => getLast6Months(), [])
 
   const current = DATA[DATA.length - 1]
   const previous = DATA[DATA.length - 2]

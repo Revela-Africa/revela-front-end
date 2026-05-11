@@ -6,6 +6,19 @@ import {
 import { appToast } from "@/lib/toast"
 import { useRouter } from "next/navigation"
 
+export interface AssessmentPayload {
+  notes: string
+  photoUrls: string[]
+  mileage?: number
+  condition: string
+  structuralDamage: boolean
+  mechanicalOverhaul: boolean
+  serviceHistory: string
+  drivetrain: string
+  engineType: string
+  transmission: string
+}
+
 export function useInspectionDetail(vehicleId: string) {
   const router = useRouter()
 
@@ -36,10 +49,15 @@ export function useInspectionDetail(vehicleId: string) {
     }
   )
 
-  async function handleSubmit(notes: string, photoUrls: string[]) {
+  async function handleSubmit(payload: AssessmentPayload) {
     if (!vehicleId) return
     await startAssessment({
-      variables: { vehicleId, notes, photoUrls },
+      variables: {
+        input: {
+          vehicleId,
+          ...payload,
+        },
+      },
     })
   }
 

@@ -67,11 +67,11 @@ export default function IntakeStep3() {
               <div className="flex items-center justify-between p-5 rounded-xl  bg-white">
                 <div>
                   <p className="text-base font-bold text-(--ink-secondary)">
-                    Structural Integrity
-                  </p>
-                  <p className="text-xs text-muted-foreground mt-0.5">
                     Any frame or chassis damage?
                   </p>
+                  {/* <p className="text-xs text-muted-foreground mt-0.5">
+                 Structural Integrity 
+                  </p> */}
                 </div>
                 {/* Toggle */}
                 <button
@@ -100,11 +100,11 @@ export default function IntakeStep3() {
              <div className="flex items-center justify-between p-5 rounded-xl  bg-white">
                 <div>
                   <p className="text-base font-bold text-(--ink-secondary)">
-                    Mechanical Overhaul
+                    Engine or transmission replacement? 
                   </p>
-                  <p className="text-xs text-muted-foreground mt-0.5">
-                    Engine or transmission replacement?
-                  </p>
+                  {/* <p className="text-xs text-muted-foreground mt-0.5">
+                     Mechanical Overhaul
+                  </p> */}
                 </div>
                 <button
                   type="button"

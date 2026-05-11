@@ -25,7 +25,11 @@ const NAV_ITEMS = [
         href: "/dashboard/inspector-invite",
         icon: ClipboardCheck,
       },
-      { label: "Status Board", href: "/dashboard/status-board", icon: BarChart3 },
+      {
+        label: "Status Board",
+        href: "/dashboard/status-board",
+        icon: BarChart3,
+      },
       {
         label: "Parts Manifest",
         href: "/dashboard/parts-manifest",
@@ -51,7 +55,7 @@ const Sidebar = () => {
     <aside
       className={cn(
         "flex flex-col bg-white border-r border-border transition-all duration-300 shrink-0",
-        collapsed ? "w-16" : "w-52",
+        collapsed ? "w-16" : "w-54",
       )}
     >
       {/* Logo */}
@@ -89,8 +93,6 @@ const Sidebar = () => {
               {section.items.map((item) => {
                 const isActive = pathname.endsWith(item.href);
 
-      
-                
                 return (
                   <Link
                     key={item.href}
@@ -113,7 +115,7 @@ const Sidebar = () => {
       </nav>
 
       {/* User */}
-      <ProfileBar collapsed={collapsed}/>
+      <ProfileBar collapsed={collapsed} />
     </aside>
   );
 };

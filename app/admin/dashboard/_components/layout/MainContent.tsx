@@ -11,7 +11,7 @@ const MainContent = ({ children }: { children: ReactNode }) => {
     .map((s) => s.charAt(0).toUpperCase() + s.slice(1))
     .join(" / ");
   return (
-    <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
+    <div className="flex-1 flex flex-col  overflow-scroll min-w-7xl">
 
       <header className="py-5 bg-white border-b border-border flex items-center justify-between px-6 shrink-0">
       
@@ -35,13 +35,13 @@ const MainContent = ({ children }: { children: ReactNode }) => {
             <Bell size={16} />
             <span className="text-xs font-bold text-[#E8A020]">Alerts</span>
           </button>
-          <button className="flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground">
+          <button className="flex whitespace-nowrap items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground">
             <Download size={16} />
             <span>Export</span>
           </button>
           <Link
             href="/admin/vehicles/new"
-            className="flex items-center gap-1.5 bg-[#E8A020] text-white text-sm font-bold px-3 py-1.5 rounded-lg hover:opacity-90 transition-opacity"
+            className="flex items-center whitespace-nowrap gap-1.5 bg-[#E8A020] text-white text-sm font-bold px-3 py-1.5 rounded-lg hover:opacity-90 transition-opacity"
           >
             <Plus size={14} />
             New Intake
@@ -49,7 +49,7 @@ const MainContent = ({ children }: { children: ReactNode }) => {
         </div>
       </header>
 
-      <main className="flex-1 overflow-y-auto p-6">{children}</main>
+      <main className="flex-1 overflow-scroll p-6 w-full  min-w-7xl">{children}</main>
     </div>
   );
 };

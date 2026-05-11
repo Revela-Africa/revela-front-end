@@ -43,7 +43,7 @@ export default function InspectorDashboard() {
 
   
   // Fetch all inspections once — no filter argument
-  const { active, completed, loading } = useInspectorInspections(`${tab}`);
+const { active, completed, loading } = useInspectorInspections()
 
   const displayed = tab === "active" ? active : completed;
   const firstName = user?.fullName
@@ -155,6 +155,7 @@ export default function InspectorDashboard() {
                   className="rounded-xl border border-[#E7E1D8] bg-white p-4 transition-all"
                 >
                   <div
+                  onClick={()=> router.push( `/dashboard/inspection/${vehicle.id}`)}
                     className="flex cursor-pointer items-start gap-3"
                   >
                     {/* Image */}

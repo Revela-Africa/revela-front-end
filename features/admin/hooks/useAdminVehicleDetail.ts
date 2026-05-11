@@ -25,7 +25,6 @@ export function useAdminVehicleDetail(vehicleId: string) {
 
   const vehicle = vehicleData?.adminGetUserSingleVehicle;
 
-
   // Regional inspectors
   const { data: regionalData, loading: regionalLoading } = useQuery(
     GetInspectorsByRegionDocument,
@@ -35,7 +34,6 @@ export function useAdminVehicleDetail(vehicleId: string) {
     },
   );
 
-
   // All inspectors (loaded on demand)
   const {
     data: allData,
@@ -44,9 +42,6 @@ export function useAdminVehicleDetail(vehicleId: string) {
   } = useQuery(GetAllInspectorsDocument, {
     // skip: !showAllInspectors,
   });
-
-  
-
 
   // Assign inspector mutation
   const [assignInspector, { loading: assigning }] = useMutation(
@@ -69,22 +64,23 @@ export function useAdminVehicleDetail(vehicleId: string) {
   );
 
   const regionalInspectors = regionalData?.getInspectorsByRegion ?? [];
-  const allInspectors = allData?.getAllInspectors ?? [];
+  const rawAllInspectors = allData?.getAllInspectors ?? [];
 
+  // Normalized allInspectors — always available
+  const allInspectors = rawAllInspectors.map((inspector) => ({
+    ...inspector,
+    isOutOfRegion: inspector.region !== vehicle?.region,
+    isAvailable: inspector.isAvailable === true,
+  }));
 
-  // Merge — regional first, then others marked as out-of-region
-const inspectors = showAllInspectors
-  ? allInspectors.map((inspector) => ({
-      ...inspector,
-      isOutOfRegion: inspector.region !== vehicle?.region,
-      // null means unknown — treat as unavailable to be safe
-      isAvailable: inspector.isAvailable === true,
-    }))
-  : regionalInspectors.map((inspector) => ({
-      ...inspector,
-      isOutOfRegion: false,
-      isAvailable: inspector.isAvailable === true,
-    }))
+  // Filtered view for the assignment panel
+  const inspectors = showAllInspectors
+    ? allInspectors
+    : regionalInspectors.map((inspector) => ({
+        ...inspector,
+        isOutOfRegion: false,
+        isAvailable: inspector.isAvailable === true,
+      }));
 
   async function handleAssign(inspectorId: string) {
     await assignInspector({
@@ -92,15 +88,13 @@ const inspectors = showAllInspectors
     });
   }
 
-console.log(allData);
-
-
-  
   return {
     vehicle,
     vehicleLoading,
     vehicleError,
     inspectors,
+    allInspectors, // ← exposed
+    regionalInspectors, // ← also useful
     inspectorsLoading: showAllInspectors ? allLoading : regionalLoading,
     showAllInspectors,
     setShowAllInspectors: (val: boolean) => {

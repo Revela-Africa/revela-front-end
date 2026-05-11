@@ -1,0 +1,6 @@
+mutation AcceptOffer($id: String!) {
+  acceptOffer(id: $id) {
+    id
+    status
+  }
+}

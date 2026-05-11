@@ -52,7 +52,7 @@ function FormSelect<T extends FieldValues>({
           {label && (
             <label
               htmlFor={id}
-              className="flex gap-x-2 text-[#3A3A3A] tracking-[1.2px] text-sm mb-0.5"
+              className="flex gap-x-2 text-[#3A3A3A] tracking-[1.2px] text-xs mb-0.5"
             >
               {label}
             </label>

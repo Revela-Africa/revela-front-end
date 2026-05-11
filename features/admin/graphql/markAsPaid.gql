@@ -1,0 +1,7 @@
+mutation MarkAsPaid($id: String!) {
+  markAsPaid(id: $id) {
+    id
+    status
+  
+  }
+}

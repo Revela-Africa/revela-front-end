@@ -49,12 +49,7 @@ export const intakeStep1Schema = z
     year: z.string().min(1, "Please select a year"),
 
     mileage: z
-      .string()
-      .min(1, "Please enter mileage")
-      .refine(
-        (val) => !isNaN(Number(val)) && Number(val) >= 0,
-        "Enter a valid mileage",
-      ),
+      .string().optional().nullable(),
 
     condition: z
       .string()

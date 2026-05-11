@@ -15,26 +15,30 @@ import { TypedDocumentNode as DocumentNode } from '@graphql-typed-document-node/
  */
 type Documents = {
     "query AdminGetAllVehicles {\n  adminGetAllVehicles {\n    id\n    status\n    make\n    model\n    year\n    mileage\n    condition\n    vin\n    tav\n    min\n    max\n    offer\n    serviceHistory\n    engineType\n    transmission\n    drivetrain\n    structuralDamage\n    mechanicalOverhaul\n    userId\n    agentName\n    agentPhone\n    scheduledAt\n    expiresAt\n    region\n    inspectorId\n    assignedToInspector\n    bookingReference\n    imageUrls {\n      imageUrl\n      angle\n    }\n  }\n}": typeof types.AdminGetAllVehiclesDocument,
-    "query AdminGetUserSingleVehicle($vehicleId: String!) {\n  adminGetUserSingleVehicle(vehicleId: $vehicleId) {\n    id\n    status\n    make\n    model\n    year\n    mileage\n    condition\n    vin\n    tav\n    min\n    max\n    offer\n    serviceHistory\n    engineType\n    transmission\n    drivetrain\n    structuralDamage\n    mechanicalOverhaul\n    userId\n    agentName\n    agentPhone\n    scheduledAt\n    collectionDate\n    timeSlot\n    bookingReference\n    inspectorId\n    assignedToInspector\n    expiresAt\n    region\n    imageUrls {\n      imageUrl\n      angle\n    }\n  }\n}": typeof types.AdminGetUserSingleVehicleDocument,
+    "query AdminGetUserSingleVehicle($vehicleId: String!) {\n  adminGetUserSingleVehicle(vehicleId: $vehicleId) {\n    id\n    status\n    make\n    model\n    year\n    mileage\n    condition\n    vin\n    tav\n    min\n    max\n    offer\n    serviceHistory\n    engineType\n    transmission\n    drivetrain\n    structuralDamage\n    mechanicalOverhaul\n    userId\n    agentName\n    agentPhone\n    scheduledAt\n    collectionDate\n    timeSlot\n    bookingReference\n    inspectorId\n    assignedToInspector\n    expiresAt\n    region\n    reevaluationTav\n    reevaluationGrade\n    inspectionReport {\n      condition\n      mileage\n      structuralDamage\n      mechanicalOverhaul\n      serviceHistory\n      drivetrain\n      engineType\n      transmission\n      notes\n      photoUrls\n    }\n    imageUrls {\n      imageUrl\n      angle\n    }\n  }\n}": typeof types.AdminGetUserSingleVehicleDocument,
     "mutation AssignInspector($vehicleId: String!, $inspectorId: String!) {\n  assignInspector(vehicleId: $vehicleId, inspectorId: $inspectorId) {\n    id\n    status\n    agentName\n    agentPhone\n  }\n}": typeof types.AssignInspectorDocument,
     "query GetAdminDashboard {\n  getAdminDashboard {\n    avgPayoutThisMonth\n    revenueMTD\n    activeVehicles\n    avgCycleTimeDays\n    revenueLastSixMonths {\n      month\n      revenue\n    }\n  }\n}": typeof types.GetAdminDashboardDocument,
     "query GetAllInspectors {\n  getAllInspectors {\n    id\n    fullName\n    phone\n    email\n    region\n    isAvailable\n  }\n}": typeof types.GetAllInspectorsDocument,
     "query GetInspectorById($inspectorId: String!) {\n  getInspectorById(inspectorId: $inspectorId) {\n    id\n    email\n    fullName\n    phone\n    region\n    isAvailable\n  }\n}": typeof types.GetInspectorByIdDocument,
     "query GetInspectorsByRegion($region: String!) {\n  getInspectorsByRegion(region: $region) {\n    id\n    fullName\n    phone\n    email\n    region\n    isAvailable\n  }\n}": typeof types.GetInspectorsByRegionDocument,
     "mutation InviteInspector($email: String!, $fullName: String!, $phone: String!, $region: String!) {\n  inviteInspector(\n    email: $email\n    fullName: $fullName\n    phone: $phone\n    region: $region\n  )\n}": typeof types.InviteInspectorDocument,
+    "mutation MarkAsPaid($id: String!) {\n  markAsPaid(id: $id) {\n    id\n    status\n  }\n}": typeof types.MarkAsPaidDocument,
     "mutation ProvideRange($vehicleId: String!, $tav: Float!, $grade: String!) {\n  provideRange(vehicleId: $vehicleId, tav: $tav, grade: $grade) {\n    id\n    status\n    tav\n    min\n    max\n  }\n}": typeof types.ProvideRangeDocument,
     "mutation RetriggerValuation($vehicleId: String!) {\n  retriggerValuation(vehicleId: $vehicleId)\n}": typeof types.RetriggerValuationDocument,
+    "mutation SendOffer($id: String!, $offer: Float!) {\n  sendOffer(id: $id, offer: $offer) {\n    id\n    status\n    offer\n  }\n}": typeof types.SendOfferDocument,
     "mutation initiateRegistration($input: InitiateRegistrationInput!) {\n  initiateRegistration(input: $input)\n}": typeof types.InitiateRegistrationDocument,
     "mutation login($input: LoginInput!) {\n  login(input: $input) {\n    accessToken\n    id\n    email\n    fullName\n    role\n  }\n}": typeof types.LoginDocument,
     "mutation Logout {\n  logout\n}": typeof types.LogoutDocument,
     "mutation RefreshToken {\n  refresh\n}": typeof types.RefreshTokenDocument,
     "mutation verifyMagicLink($token: String!) {\n  verifyMagicLink(token: $token) {\n    accessToken\n    id\n    email\n    fullName\n    role\n  }\n}": typeof types.VerifyMagicLinkDocument,
     "mutation verifyOtp($input: VerifyOtpInput!) {\n  verifyOtp(input: $input)\n}": typeof types.VerifyOtpDocument,
+    "mutation AcceptOffer($id: String!) {\n  acceptOffer(id: $id) {\n    id\n    status\n  }\n}": typeof types.AcceptOfferDocument,
     "query GetUserDashboard {\n  getUserDashboard {\n    totalVehicles\n    activeVehicles\n    totalPayout\n  }\n}": typeof types.GetUserDashboardDocument,
+    "mutation RejectOffer($id: String!) {\n  rejectOffer(id: $id) {\n    id\n    status\n  }\n}": typeof types.RejectOfferDocument,
     "query GetInspectionById($vehicleId: String!) {\n  getInspectionById(vehicleId: $vehicleId) {\n    id\n    status\n    make\n    model\n    year\n    mileage\n    condition\n    region\n    tav\n    min\n    max\n    agentName\n    scheduledAt\n    collectionAddress\n    imageUrls {\n      imageUrl\n      angle\n    }\n    userId\n  }\n}": typeof types.GetInspectionByIdDocument,
     "query InspectorGetAllInspections($filter: String) {\n  inspectorGetAllInspections(filter: $filter) {\n    id\n    status\n    make\n    model\n    year\n    mileage\n    condition\n    region\n    tav\n    min\n    max\n    agentName\n    agentPhone\n    scheduledAt\n    collectionAddress\n    imageUrls {\n      imageUrl\n      angle\n    }\n    userId\n  }\n}": typeof types.InspectorGetAllInspectionsDocument,
     "mutation SetPassword($password: String!) {\n  setPassword(password: $password)\n}": typeof types.SetPasswordDocument,
-    "mutation StartAssessment($vehicleId: String!, $notes: String!, $photoUrls: [String!]!) {\n  startAssessment(vehicleId: $vehicleId, notes: $notes, photoUrls: $photoUrls) {\n    id\n    status\n  }\n}": typeof types.StartAssessmentDocument,
+    "mutation StartAssessment($input: StartAssessmentInput!) {\n  startAssessment(input: $input) {\n    id\n    status\n  }\n}": typeof types.StartAssessmentDocument,
     "query GetSingleUserVehicle($vehicleId: String!) {\n  getSingleUserVehicle(vehicleId: $vehicleId) {\n    id\n    status\n    make\n    model\n    year\n    mileage\n    condition\n    drivetrain\n    engineType\n    transmission\n    mechanicalOverhaul\n    structuralDamage\n    serviceHistory\n    tav\n    min\n    max\n    offer\n    imageUrls {\n      imageUrl\n      angle\n    }\n    agentName\n    agentPhone\n    scheduledAt\n    expiresAt\n    bankName\n    accountNumber\n    collectionDate\n    timeSlot\n    collectionAddress\n    bookingReference\n  }\n}": typeof types.GetSingleUserVehicleDocument,
     "query GetVehiclesByUser {\n  getVehiclesByUser {\n    id\n    status\n    make\n    model\n    year\n    mileage\n    condition\n    tav\n    min\n    max\n    offer\n    imageUrls {\n      imageUrl\n      angle\n    }\n    scheduledAt\n    expiresAt\n  }\n}": typeof types.GetVehiclesByUserDocument,
     "mutation SubmitVehicle($input: SubmitVehicleInputType!) {\n  submitVehicle(input: $input) {\n    id\n    status\n    tav\n    min\n    max\n  }\n}": typeof types.SubmitVehicleDocument,
@@ -42,26 +46,30 @@ type Documents = {
 };
 const documents: Documents = {
     "query AdminGetAllVehicles {\n  adminGetAllVehicles {\n    id\n    status\n    make\n    model\n    year\n    mileage\n    condition\n    vin\n    tav\n    min\n    max\n    offer\n    serviceHistory\n    engineType\n    transmission\n    drivetrain\n    structuralDamage\n    mechanicalOverhaul\n    userId\n    agentName\n    agentPhone\n    scheduledAt\n    expiresAt\n    region\n    inspectorId\n    assignedToInspector\n    bookingReference\n    imageUrls {\n      imageUrl\n      angle\n    }\n  }\n}": types.AdminGetAllVehiclesDocument,
-    "query AdminGetUserSingleVehicle($vehicleId: String!) {\n  adminGetUserSingleVehicle(vehicleId: $vehicleId) {\n    id\n    status\n    make\n    model\n    year\n    mileage\n    condition\n    vin\n    tav\n    min\n    max\n    offer\n    serviceHistory\n    engineType\n    transmission\n    drivetrain\n    structuralDamage\n    mechanicalOverhaul\n    userId\n    agentName\n    agentPhone\n    scheduledAt\n    collectionDate\n    timeSlot\n    bookingReference\n    inspectorId\n    assignedToInspector\n    expiresAt\n    region\n    imageUrls {\n      imageUrl\n      angle\n    }\n  }\n}": types.AdminGetUserSingleVehicleDocument,
+    "query AdminGetUserSingleVehicle($vehicleId: String!) {\n  adminGetUserSingleVehicle(vehicleId: $vehicleId) {\n    id\n    status\n    make\n    model\n    year\n    mileage\n    condition\n    vin\n    tav\n    min\n    max\n    offer\n    serviceHistory\n    engineType\n    transmission\n    drivetrain\n    structuralDamage\n    mechanicalOverhaul\n    userId\n    agentName\n    agentPhone\n    scheduledAt\n    collectionDate\n    timeSlot\n    bookingReference\n    inspectorId\n    assignedToInspector\n    expiresAt\n    region\n    reevaluationTav\n    reevaluationGrade\n    inspectionReport {\n      condition\n      mileage\n      structuralDamage\n      mechanicalOverhaul\n      serviceHistory\n      drivetrain\n      engineType\n      transmission\n      notes\n      photoUrls\n    }\n    imageUrls {\n      imageUrl\n      angle\n    }\n  }\n}": types.AdminGetUserSingleVehicleDocument,
     "mutation AssignInspector($vehicleId: String!, $inspectorId: String!) {\n  assignInspector(vehicleId: $vehicleId, inspectorId: $inspectorId) {\n    id\n    status\n    agentName\n    agentPhone\n  }\n}": types.AssignInspectorDocument,
     "query GetAdminDashboard {\n  getAdminDashboard {\n    avgPayoutThisMonth\n    revenueMTD\n    activeVehicles\n    avgCycleTimeDays\n    revenueLastSixMonths {\n      month\n      revenue\n    }\n  }\n}": types.GetAdminDashboardDocument,
     "query GetAllInspectors {\n  getAllInspectors {\n    id\n    fullName\n    phone\n    email\n    region\n    isAvailable\n  }\n}": types.GetAllInspectorsDocument,
     "query GetInspectorById($inspectorId: String!) {\n  getInspectorById(inspectorId: $inspectorId) {\n    id\n    email\n    fullName\n    phone\n    region\n    isAvailable\n  }\n}": types.GetInspectorByIdDocument,
     "query GetInspectorsByRegion($region: String!) {\n  getInspectorsByRegion(region: $region) {\n    id\n    fullName\n    phone\n    email\n    region\n    isAvailable\n  }\n}": types.GetInspectorsByRegionDocument,
     "mutation InviteInspector($email: String!, $fullName: String!, $phone: String!, $region: String!) {\n  inviteInspector(\n    email: $email\n    fullName: $fullName\n    phone: $phone\n    region: $region\n  )\n}": types.InviteInspectorDocument,
+    "mutation MarkAsPaid($id: String!) {\n  markAsPaid(id: $id) {\n    id\n    status\n  }\n}": types.MarkAsPaidDocument,
     "mutation ProvideRange($vehicleId: String!, $tav: Float!, $grade: String!) {\n  provideRange(vehicleId: $vehicleId, tav: $tav, grade: $grade) {\n    id\n    status\n    tav\n    min\n    max\n  }\n}": types.ProvideRangeDocument,
     "mutation RetriggerValuation($vehicleId: String!) {\n  retriggerValuation(vehicleId: $vehicleId)\n}": types.RetriggerValuationDocument,
+    "mutation SendOffer($id: String!, $offer: Float!) {\n  sendOffer(id: $id, offer: $offer) {\n    id\n    status\n    offer\n  }\n}": types.SendOfferDocument,
     "mutation initiateRegistration($input: InitiateRegistrationInput!) {\n  initiateRegistration(input: $input)\n}": types.InitiateRegistrationDocument,
     "mutation login($input: LoginInput!) {\n  login(input: $input) {\n    accessToken\n    id\n    email\n    fullName\n    role\n  }\n}": types.LoginDocument,
     "mutation Logout {\n  logout\n}": types.LogoutDocument,
     "mutation RefreshToken {\n  refresh\n}": types.RefreshTokenDocument,
     "mutation verifyMagicLink($token: String!) {\n  verifyMagicLink(token: $token) {\n    accessToken\n    id\n    email\n    fullName\n    role\n  }\n}": types.VerifyMagicLinkDocument,
     "mutation verifyOtp($input: VerifyOtpInput!) {\n  verifyOtp(input: $input)\n}": types.VerifyOtpDocument,
+    "mutation AcceptOffer($id: String!) {\n  acceptOffer(id: $id) {\n    id\n    status\n  }\n}": types.AcceptOfferDocument,
     "query GetUserDashboard {\n  getUserDashboard {\n    totalVehicles\n    activeVehicles\n    totalPayout\n  }\n}": types.GetUserDashboardDocument,
+    "mutation RejectOffer($id: String!) {\n  rejectOffer(id: $id) {\n    id\n    status\n  }\n}": types.RejectOfferDocument,
     "query GetInspectionById($vehicleId: String!) {\n  getInspectionById(vehicleId: $vehicleId) {\n    id\n    status\n    make\n    model\n    year\n    mileage\n    condition\n    region\n    tav\n    min\n    max\n    agentName\n    scheduledAt\n    collectionAddress\n    imageUrls {\n      imageUrl\n      angle\n    }\n    userId\n  }\n}": types.GetInspectionByIdDocument,
     "query InspectorGetAllInspections($filter: String) {\n  inspectorGetAllInspections(filter: $filter) {\n    id\n    status\n    make\n    model\n    year\n    mileage\n    condition\n    region\n    tav\n    min\n    max\n    agentName\n    agentPhone\n    scheduledAt\n    collectionAddress\n    imageUrls {\n      imageUrl\n      angle\n    }\n    userId\n  }\n}": types.InspectorGetAllInspectionsDocument,
     "mutation SetPassword($password: String!) {\n  setPassword(password: $password)\n}": types.SetPasswordDocument,
-    "mutation StartAssessment($vehicleId: String!, $notes: String!, $photoUrls: [String!]!) {\n  startAssessment(vehicleId: $vehicleId, notes: $notes, photoUrls: $photoUrls) {\n    id\n    status\n  }\n}": types.StartAssessmentDocument,
+    "mutation StartAssessment($input: StartAssessmentInput!) {\n  startAssessment(input: $input) {\n    id\n    status\n  }\n}": types.StartAssessmentDocument,
     "query GetSingleUserVehicle($vehicleId: String!) {\n  getSingleUserVehicle(vehicleId: $vehicleId) {\n    id\n    status\n    make\n    model\n    year\n    mileage\n    condition\n    drivetrain\n    engineType\n    transmission\n    mechanicalOverhaul\n    structuralDamage\n    serviceHistory\n    tav\n    min\n    max\n    offer\n    imageUrls {\n      imageUrl\n      angle\n    }\n    agentName\n    agentPhone\n    scheduledAt\n    expiresAt\n    bankName\n    accountNumber\n    collectionDate\n    timeSlot\n    collectionAddress\n    bookingReference\n  }\n}": types.GetSingleUserVehicleDocument,
     "query GetVehiclesByUser {\n  getVehiclesByUser {\n    id\n    status\n    make\n    model\n    year\n    mileage\n    condition\n    tav\n    min\n    max\n    offer\n    imageUrls {\n      imageUrl\n      angle\n    }\n    scheduledAt\n    expiresAt\n  }\n}": types.GetVehiclesByUserDocument,
     "mutation SubmitVehicle($input: SubmitVehicleInputType!) {\n  submitVehicle(input: $input) {\n    id\n    status\n    tav\n    min\n    max\n  }\n}": types.SubmitVehicleDocument,
@@ -89,7 +97,7 @@ export function graphql(source: "query AdminGetAllVehicles {\n  adminGetAllVehic
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
-export function graphql(source: "query AdminGetUserSingleVehicle($vehicleId: String!) {\n  adminGetUserSingleVehicle(vehicleId: $vehicleId) {\n    id\n    status\n    make\n    model\n    year\n    mileage\n    condition\n    vin\n    tav\n    min\n    max\n    offer\n    serviceHistory\n    engineType\n    transmission\n    drivetrain\n    structuralDamage\n    mechanicalOverhaul\n    userId\n    agentName\n    agentPhone\n    scheduledAt\n    collectionDate\n    timeSlot\n    bookingReference\n    inspectorId\n    assignedToInspector\n    expiresAt\n    region\n    imageUrls {\n      imageUrl\n      angle\n    }\n  }\n}"): (typeof documents)["query AdminGetUserSingleVehicle($vehicleId: String!) {\n  adminGetUserSingleVehicle(vehicleId: $vehicleId) {\n    id\n    status\n    make\n    model\n    year\n    mileage\n    condition\n    vin\n    tav\n    min\n    max\n    offer\n    serviceHistory\n    engineType\n    transmission\n    drivetrain\n    structuralDamage\n    mechanicalOverhaul\n    userId\n    agentName\n    agentPhone\n    scheduledAt\n    collectionDate\n    timeSlot\n    bookingReference\n    inspectorId\n    assignedToInspector\n    expiresAt\n    region\n    imageUrls {\n      imageUrl\n      angle\n    }\n  }\n}"];
+export function graphql(source: "query AdminGetUserSingleVehicle($vehicleId: String!) {\n  adminGetUserSingleVehicle(vehicleId: $vehicleId) {\n    id\n    status\n    make\n    model\n    year\n    mileage\n    condition\n    vin\n    tav\n    min\n    max\n    offer\n    serviceHistory\n    engineType\n    transmission\n    drivetrain\n    structuralDamage\n    mechanicalOverhaul\n    userId\n    agentName\n    agentPhone\n    scheduledAt\n    collectionDate\n    timeSlot\n    bookingReference\n    inspectorId\n    assignedToInspector\n    expiresAt\n    region\n    reevaluationTav\n    reevaluationGrade\n    inspectionReport {\n      condition\n      mileage\n      structuralDamage\n      mechanicalOverhaul\n      serviceHistory\n      drivetrain\n      engineType\n      transmission\n      notes\n      photoUrls\n    }\n    imageUrls {\n      imageUrl\n      angle\n    }\n  }\n}"): (typeof documents)["query AdminGetUserSingleVehicle($vehicleId: String!) {\n  adminGetUserSingleVehicle(vehicleId: $vehicleId) {\n    id\n    status\n    make\n    model\n    year\n    mileage\n    condition\n    vin\n    tav\n    min\n    max\n    offer\n    serviceHistory\n    engineType\n    transmission\n    drivetrain\n    structuralDamage\n    mechanicalOverhaul\n    userId\n    agentName\n    agentPhone\n    scheduledAt\n    collectionDate\n    timeSlot\n    bookingReference\n    inspectorId\n    assignedToInspector\n    expiresAt\n    region\n    reevaluationTav\n    reevaluationGrade\n    inspectionReport {\n      condition\n      mileage\n      structuralDamage\n      mechanicalOverhaul\n      serviceHistory\n      drivetrain\n      engineType\n      transmission\n      notes\n      photoUrls\n    }\n    imageUrls {\n      imageUrl\n      angle\n    }\n  }\n}"];
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
@@ -117,11 +125,19 @@ export function graphql(source: "mutation InviteInspector($email: String!, $full
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
+export function graphql(source: "mutation MarkAsPaid($id: String!) {\n  markAsPaid(id: $id) {\n    id\n    status\n  }\n}"): (typeof documents)["mutation MarkAsPaid($id: String!) {\n  markAsPaid(id: $id) {\n    id\n    status\n  }\n}"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
 export function graphql(source: "mutation ProvideRange($vehicleId: String!, $tav: Float!, $grade: String!) {\n  provideRange(vehicleId: $vehicleId, tav: $tav, grade: $grade) {\n    id\n    status\n    tav\n    min\n    max\n  }\n}"): (typeof documents)["mutation ProvideRange($vehicleId: String!, $tav: Float!, $grade: String!) {\n  provideRange(vehicleId: $vehicleId, tav: $tav, grade: $grade) {\n    id\n    status\n    tav\n    min\n    max\n  }\n}"];
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function graphql(source: "mutation RetriggerValuation($vehicleId: String!) {\n  retriggerValuation(vehicleId: $vehicleId)\n}"): (typeof documents)["mutation RetriggerValuation($vehicleId: String!) {\n  retriggerValuation(vehicleId: $vehicleId)\n}"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "mutation SendOffer($id: String!, $offer: Float!) {\n  sendOffer(id: $id, offer: $offer) {\n    id\n    status\n    offer\n  }\n}"): (typeof documents)["mutation SendOffer($id: String!, $offer: Float!) {\n  sendOffer(id: $id, offer: $offer) {\n    id\n    status\n    offer\n  }\n}"];
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
@@ -149,7 +165,15 @@ export function graphql(source: "mutation verifyOtp($input: VerifyOtpInput!) {\n
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
+export function graphql(source: "mutation AcceptOffer($id: String!) {\n  acceptOffer(id: $id) {\n    id\n    status\n  }\n}"): (typeof documents)["mutation AcceptOffer($id: String!) {\n  acceptOffer(id: $id) {\n    id\n    status\n  }\n}"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
 export function graphql(source: "query GetUserDashboard {\n  getUserDashboard {\n    totalVehicles\n    activeVehicles\n    totalPayout\n  }\n}"): (typeof documents)["query GetUserDashboard {\n  getUserDashboard {\n    totalVehicles\n    activeVehicles\n    totalPayout\n  }\n}"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "mutation RejectOffer($id: String!) {\n  rejectOffer(id: $id) {\n    id\n    status\n  }\n}"): (typeof documents)["mutation RejectOffer($id: String!) {\n  rejectOffer(id: $id) {\n    id\n    status\n  }\n}"];
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
@@ -165,7 +189,7 @@ export function graphql(source: "mutation SetPassword($password: String!) {\n  s
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
-export function graphql(source: "mutation StartAssessment($vehicleId: String!, $notes: String!, $photoUrls: [String!]!) {\n  startAssessment(vehicleId: $vehicleId, notes: $notes, photoUrls: $photoUrls) {\n    id\n    status\n  }\n}"): (typeof documents)["mutation StartAssessment($vehicleId: String!, $notes: String!, $photoUrls: [String!]!) {\n  startAssessment(vehicleId: $vehicleId, notes: $notes, photoUrls: $photoUrls) {\n    id\n    status\n  }\n}"];
+export function graphql(source: "mutation StartAssessment($input: StartAssessmentInput!) {\n  startAssessment(input: $input) {\n    id\n    status\n  }\n}"): (typeof documents)["mutation StartAssessment($input: StartAssessmentInput!) {\n  startAssessment(input: $input) {\n    id\n    status\n  }\n}"];
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */

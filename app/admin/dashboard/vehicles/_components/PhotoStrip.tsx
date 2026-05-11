@@ -7,6 +7,8 @@ const ANGLE_LABELS = ["Front", "Rear", "Driver", "Passenger", "Engine", "Interio
 export function PhotoStrip({ imageUrls }: Props) {
   if (!imageUrls.length) return null
 
+console.log(imageUrls);
+
   return (
     <div className="bg-white rounded-2xl border border-border p-4">
       <div className="flex items-center justify-between mb-3">

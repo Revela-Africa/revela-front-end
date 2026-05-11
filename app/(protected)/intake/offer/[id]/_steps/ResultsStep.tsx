@@ -5,12 +5,10 @@ import { useOfferStore } from "@/features/offer/store/useOfferStore";
 import { Shield, Verified, Info } from "lucide-react";
 import { useEffect, useState } from "react";
 import CountUp from "react-countup";
-import { useRouter } from "next/navigation";
 
 export default function ResultsStep() {
-  const [seconds, setSeconds] = useState(14);
+  const [seconds, setSeconds] = useState(30);
   const { tav, make, model, year, mileage, setStep } = useOfferStore();
-  const router = useRouter();
 
   useEffect(() => {
     if (seconds === 0) {
@@ -56,8 +54,9 @@ export default function ResultsStep() {
             Estimated price — not final
           </p>
           <p className="text-xs leading-relaxed text-[#A67C00]/90">
-            This valuation is an estimate based on market data and visual analysis. 
-            The final offer will be adjusted following a physical inspection of your vehicle.
+            This valuation is an estimate based on market data and visual
+            analysis. The final offer will be adjusted following a physical
+            inspection of your vehicle.
           </p>
         </div>
       </div>
@@ -78,6 +77,7 @@ export default function ResultsStep() {
       </div>
 
       <Button
+        onClick={() => setStep(2)}
         className="w-full bg-[#E8A020] text-white font-bold py-4 rounded-xl hover:opacity-90 transition-opacity"
       >
         Continue in {seconds}

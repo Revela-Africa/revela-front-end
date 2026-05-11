@@ -29,6 +29,20 @@ query AdminGetUserSingleVehicle($vehicleId: String!) {
     assignedToInspector
     expiresAt
     region
+     reevaluationTav
+    reevaluationGrade
+    inspectionReport {
+      condition
+      mileage
+      structuralDamage
+      mechanicalOverhaul
+      serviceHistory
+      drivetrain
+      engineType
+      transmission
+      notes
+      photoUrls
+    }
     imageUrls {
       imageUrl
       angle
