@@ -34,6 +34,7 @@ const ASSIGNMENT_LOCKED_STATUSES = [
   "UNDER_ASSESSMENT",
   "OFFER_SENT",
   "ACCEPTED",
+  "OFFER_REJECTED",
   "PAID",
 ];
 
@@ -113,7 +114,7 @@ export function AgentAssignment({
 
         {isLocked && (
           <p className="text-xs text-muted-foreground">
-            Inspector assignment is locked until pickup is scheduled.
+            Inspector {isReassignment ? "re-assignment" : "assignment"} is not available at the moment.
           </p>
         )}
 

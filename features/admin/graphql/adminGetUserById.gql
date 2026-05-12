@@ -1,0 +1,8 @@
+query AdminGetUserById($userId: String!) {
+  adminGetUserById(userId: $userId) {
+    id
+    fullName
+    email
+    phoneNumber
+  }
+}

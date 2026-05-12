@@ -6,7 +6,7 @@ interface Props {
 }
 
 export function StatsRow({ dashBoardData }: Props) {
-  console.log(dashBoardData);
+  // console.log(dashBoardData);
 
   const STATS = [
     {

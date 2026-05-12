@@ -45,14 +45,14 @@ export default function SettingsPage() {
   const [showForm, setShowForm] = useState(false);
 
   const [inviteInspector, { loading: inviting }] = useMutation(
-    InviteInspectorDocument
+    InviteInspectorDocument,
   );
 
   const { data, loading: loadingInspectors } = useQuery(
     GetAllInspectorsDocument,
     {
       fetchPolicy: "cache-and-network",
-    }
+    },
   );
 
   const inspectors = data?.getAllInspectors ?? [];
@@ -298,7 +298,9 @@ export default function SettingsPage() {
                       <p className="truncate text-sm font-bold text-[#171D17]">
                         {inspector.fullName}
                       </p>
-                      <p className="text-xs text-[#6A6A6A]">{inspector.email}</p>
+                      <p className="text-xs text-[#6A6A6A]">
+                        {inspector.email}
+                      </p>
                     </div>
                   </div>
 
@@ -321,12 +323,12 @@ export default function SettingsPage() {
                   {/* Status */}
                   <div className="col-span-2">
                     {inspector.isAvailable ? (
-                      <span className="inline-flex items-center gap-1.5 rounded-full bg-green-50 px-2.5 py-1 text-[10px] font-bold text-green-600">
+                      <span className="inline-flex items-center gap-1.5 rounded-full bg-green-50 px-3 py-1 text-[10px] font-bold text-green-600">
                         <ShieldCheck size={10} />
                         Available
                       </span>
                     ) : (
-                      <span className="inline-flex items-center gap-1.5 rounded-full bg-[#F7F2EB] px-2.5 py-1 text-[10px] font-bold text-[#6A6A6A]">
+                      <span className="inline-flex items-center gap-1.5 rounded-full bg-[#F7F2EB] px-3 py-1 text-[10px] font-bold text-[#6A6A6A]">
                         <Clock size={10} />
                         Busy
                       </span>

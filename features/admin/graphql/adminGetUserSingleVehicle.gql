@@ -31,6 +31,7 @@ query AdminGetUserSingleVehicle($vehicleId: String!) {
     region
      reevaluationTav
     reevaluationGrade
+    counterOffer
     inspectionReport {
       condition
       mileage

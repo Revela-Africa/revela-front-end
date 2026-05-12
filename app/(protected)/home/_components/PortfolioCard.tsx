@@ -23,10 +23,7 @@ export function PortfolioCard({ dashBoardData }: Props) {
             {dashBoardData?.activeVehicles || "-"} Vehicles
           </p>
         </div>
-        <div>
-          <p className="text-xs text-[#6A6A6A]">Avg. Grade</p>
-          <p className="text-sm font-bold text-[#E8A020]">B+</p>
-        </div>
+       
       </div>
     </div>
   );

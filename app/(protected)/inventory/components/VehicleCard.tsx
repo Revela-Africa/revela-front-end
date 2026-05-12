@@ -93,14 +93,21 @@ function getCTA(vehicle: Vehicle, router: ReturnType<typeof useRouter>): CTA | n
         action: () => router.push(`/intake/offer/${vehicle.id}`),
       }
     case "OFFER_SENT":
-    case "OFFER_REJECTED":
-      return {
-        label: "View Final Offer →",
-        action: () => router.push(`/intake/offer/${vehicle.id}`),
-      }
-    case "ACCEPTED":
-    case "PAID":
-      return null
+   case "ACCEPTED":
+  return {
+    label: "View Status →",
+    action: () => router.push(`/intake/offer/${vehicle.id}`),
+  }
+case "PAID":
+  return {
+    label: "View Payment →",
+    action: () => router.push(`/intake/offer/${vehicle.id}`),
+  }
+case "OFFER_REJECTED":
+  return {
+    label: "View Decision →",
+    action: () => router.push(`/intake/offer/${vehicle.id}`),
+  }
     default:
       return null
   }

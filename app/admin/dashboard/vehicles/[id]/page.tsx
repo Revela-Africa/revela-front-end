@@ -2,7 +2,7 @@
 
 import { useParams, useRouter } from "next/navigation";
 import { useState } from "react";
-import { ArrowLeft, Share2, Loader2 } from "lucide-react";
+import { ArrowLeft, Share2, Loader2, XCircle } from "lucide-react";
 import { useAdminVehicleDetail } from "@/features/admin/hooks/useAdminVehicleDetail";
 import { VehicleSpecs } from "./_components/VehicleSpecs";
 import { PhotoStrip } from "./_components/PhotoStrip";
@@ -20,6 +20,7 @@ import {
   SendOfferDocument,
 } from "@/graphql/generated/graphql";
 import { Button } from "@/components/ui/button";
+import { UserProfile } from "./_components/UserProfile";
 
 export default function VehicleDetailPage() {
   const { id } = useParams<{ id: string }>();
@@ -212,8 +213,23 @@ export default function VehicleDetailPage() {
         {/* ── Right — actions panel ───────────────────────── */}
         <div className="space-y-4">
           {vehicle.status === "PENDING_REVIEW" && (
-            <PendingReviewPanel vehicleId={vehicle.id} onSuccess={refetch} />
+            <PendingReviewPanel
+              vehicleId={vehicle.id}
+              mode="initial"
+              onSuccess={refetch}
+            />
           )}
+
+          {/* Post-inspection reevaluation failure */}
+          {vehicle.inspectionReport &&
+            !vehicle.reevaluationTav &&
+            vehicle.status !== "PENDING_REVIEW" && (
+              <PendingReviewPanel
+                vehicleId={vehicle.id}
+                mode="reevaluation"
+                onSuccess={refetch}
+              />
+            )}
           <StatusFlow currentStatus={vehicle.status} />
 
           <AgentAssignment
@@ -231,7 +247,7 @@ export default function VehicleDetailPage() {
           />
 
           {/* Final offer panel */}
-          {/* Final offer panel */}
+
           <div className="bg-white rounded-2xl border border-border p-4 space-y-3">
             <h3 className="text-sm font-bold text-foreground">Final Offer</h3>
 
@@ -252,9 +268,37 @@ export default function VehicleDetailPage() {
                   </p>
                 )}
                 {vehicle.status === "OFFER_REJECTED" && (
-                  <p className="text-xs text-red-500 font-bold">
-                    ❌ Rejected by user
-                  </p>
+                  <div className="space-y-2 rounded-2xl border border-red-200 bg-red-50 p-4">
+                    <div className="flex items-center gap-2">
+                      <XCircle size={14} className="shrink-0 text-red-500" />
+                      <p className="text-xs font-bold text-red-600">
+                        Offer rejected by user
+                      </p>
+                    </div>
+
+                    {vehicle.counterOffer ? (
+                      <div className="rounded-xl border border-red-100 bg-white p-3">
+                        <p className="text-xs text-[#6A6A6A]">
+                          Counter offer submitted
+                        </p>
+                        <p className="mt-1 text-lg font-extrabold text-[#171D17]">
+                          ₦{vehicle.counterOffer.toLocaleString()}
+                        </p>
+                        <p className="mt-1 text-[10px] text-[#6A6A6A]">
+                          The user expects a revised offer closer to this amount
+                        </p>
+                      </div>
+                    ) : (
+                      <p className="text-xs text-[#6A6A6A]">
+                        No counter offer provided. The user declined without
+                        specifying a preferred price.
+                      </p>
+                    )}
+
+                      <UserProfile userId={vehicle.userId}/>
+                  </div>
+
+                
                 )}
               </div>
             ) : isSettingOffer ? (

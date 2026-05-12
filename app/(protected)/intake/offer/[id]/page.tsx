@@ -12,24 +12,24 @@ import ConfirmStep from "./_steps/ConfirmStep";
 import ScheduleStep from "./_steps/ScheduleStep";
 import FinalStep from "./_steps/FinalStep";
 import OfferStep from "./_steps/OfferStep";
+import OutcomeStep from "./_steps/OutcomeStep";
+import PaidStep from "./_steps/PaidStep";
 
-// Status → step mapping
 function getStepFromStatus(status: string): number {
   switch (status) {
     case "RANGE_PROVIDED":
-      return 1; // ResultsStep
-
+      return 1;
     case "INSPECTION_SCHEDULED":
     case "INSPECTOR_ASSIGNED":
     case "UNDER_ASSESSMENT":
-      return 5; // FinalStep — user watches timeline progress
-
+      return 5;
     case "OFFER_SENT":
+      return 6;
     case "OFFER_REJECTED":
     case "ACCEPTED":
+      return 7;
     case "PAID":
-      return 6; // OfferStep — final offer interaction
-
+      return 8;
     default:
       return 1;
   }
@@ -37,40 +37,43 @@ function getStepFromStatus(status: string): number {
 
 export default function OfferPage() {
   const { id } = useParams<{ id: string }>();
-  const { step, tav, setVehicleData, setImageUrls, setStep, setOffer } =
-    useOfferStore();
+  const {
+    step,
+    vehicleId,
+    setVehicleData,
+    setVehicleStatus,
+    setImageUrls,
+    setStep,
+    setOffer,
+    reset, 
+  } = useOfferStore();
 
-  // Always fetch when coming from inventory (store might be empty)
-  // Skip only if store already has data AND we came from processing page
-  const storeHasData = !!tav;
 
   const { data, loading, error } = useQuery(GetSingleUserVehicleDocument, {
     variables: { vehicleId: id },
-    skip: !id || storeHasData,
+    skip: !id,
+    fetchPolicy: "cache-and-network",
   });
 
+  // Reset store if the user navigated to a different vehicle
+  useEffect(() => {
+    if (!id) return;
+    if (vehicleId && vehicleId !== id) {
+      reset();
+    }
+  }, [id, vehicleId, reset]);
+
+  // Hydrate store from fetched data
   useEffect(() => {
     const vehicle = data?.getSingleUserVehicle;
-    if (!vehicle) return;
+    if (!vehicle || vehicle.id !== id) return;
 
-    // ── Always set step from status ──────────────────────
-    // Keeps UI in sync regardless of navigation entry point
     const correctStep = getStepFromStatus(vehicle.status);
     setStep(correctStep);
-
-    console.log(vehicle.status);
-
-    // ── Enforce real TAV from backend ─────────────────────
-    // We no longer support fake/generated values.
-    // If this ever fails, it's a backend contract issue.
+    setVehicleStatus(vehicle.status)
     if (vehicle.tav == null) {
       console.error("TAV missing from backend:", vehicle);
-
-      // Option 1 (strict): stop execution entirely
       return;
-
-      // Option 2 (if you want UI fallback instead of breaking flow):
-      // throw new Error("TAV is required but missing")
     }
 
     const tav = vehicle.tav;
@@ -79,7 +82,7 @@ export default function OfferPage() {
       (vehicle.imageUrls ?? []).map((img) => ({
         imageUrl: img.imageUrl,
         angle: img.angle,
-      })),
+      }))
     );
 
     setVehicleData({
@@ -94,24 +97,23 @@ export default function OfferPage() {
       max: vehicle.max ?? Math.round(tav * 1.05),
     });
 
-    // ── Set real offer if admin has provided one ──────────
     if (vehicle.offer) {
       setOffer(vehicle.offer);
     }
-  }, [data]);
+  }, [data, id, setImageUrls, setOffer, setStep, setVehicleData]);
 
-  if (!storeHasData && loading) {
+  if (loading) {
     return (
-      <div className="min-h-[60vh] flex items-center justify-center">
-        <div className="w-6 h-6 rounded-full border-2 border-[#E8A020] border-t-transparent animate-spin" />
+      <div className="flex min-h-[60vh] items-center justify-center">
+        <div className="h-6 w-6 animate-spin rounded-full border-2 border-[#E8A020] border-t-transparent" />
       </div>
     );
   }
 
-  if (!storeHasData && error) {
+  if (error) {
     return (
-      <div className="min-h-[60vh] flex items-center justify-center">
-        <p className="text-sm text-destructive text-center">
+      <div className="flex min-h-[60vh] items-center justify-center">
+        <p className="text-center text-sm text-destructive">
           Failed to load vehicle. Please try again.
         </p>
       </div>
@@ -126,6 +128,8 @@ export default function OfferPage() {
       {step === 4 && <ScheduleStep />}
       {step === 5 && <FinalStep />}
       {step === 6 && <OfferStep />}
+      {step === 7 && <OutcomeStep />}
+      {step === 8 && <PaidStep />}
     </>
   );
 }

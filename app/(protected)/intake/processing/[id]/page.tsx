@@ -56,6 +56,8 @@ export default function ProcessingPage() {
 
   const vehicle = data?.getSingleUserVehicle
 
+
+  
   useEffect(() => {
     useIntakeStore.getState().reset()
   }, [])
@@ -72,6 +74,9 @@ export default function ProcessingPage() {
       if (timeoutTimerRef.current) clearTimeout(timeoutTimerRef.current)
     }
   }, [])
+
+  console.log(vehicle?.status);
+  
 
   // ── Helper — populate store and navigate ───────────────
   function populateAndNavigate(tav: number, min: number, max: number) {
@@ -123,6 +128,7 @@ export default function ProcessingPage() {
       populateAndNavigate(vehicle.tav, vehicle.min, vehicle.max)
     }
   }, [vehicle])
+  
 
   // ── Error state ────────────────────────────────────────
   if (vehicleError) {

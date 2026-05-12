@@ -5,32 +5,40 @@ import { useMutation } from "@apollo/client/react"
 import {
   ProvideRangeDocument,
   RetriggerValuationDocument,
+  ManualReevaluationDocument,
 } from "@/graphql/generated/graphql"
 import { appToast } from "@/lib/toast"
 import { AlertTriangle, RefreshCcw, Calculator, Loader2 } from "lucide-react"
 
 const GRADE_OPTIONS = ["A", "B", "C", "D"]
 
+// initial → first TAV generation failed (before inspection)
+// reevaluation → AI reevaluation failed (after inspector report)
+type PanelMode = "initial" | "reevaluation"
+
 interface Props {
   vehicleId: string
-  onSuccess: () => void // refetch vehicle after action
+  mode: PanelMode
+  onSuccess: () => void
 }
 
-export function PendingReviewPanel({ vehicleId, onSuccess }: Props) {
-  const [mode, setMode] = useState<"idle" | "manual" | "retrigger">("idle")
+export function PendingReviewPanel({ vehicleId, mode, onSuccess }: Props) {
+  const [view, setView] = useState<"idle" | "manual" | "retrigger">("idle")
   const [tav, setTav] = useState("")
   const [grade, setGrade] = useState("B")
 
-  // ── Provide range manually ─────────────────────────────
+  const isReevaluation = mode === "reevaluation"
+
+  // ── Initial TAV manual entry ───────────────────────────
   const [provideRange, { loading: providing }] = useMutation(
     ProvideRangeDocument,
     {
       onCompleted: () => {
         appToast.success({
           title: "TAV set successfully",
-          description: "Vehicle has been moved to RANGE_PROVIDED",
+          description: "Vehicle moved to RANGE_PROVIDED",
         })
-        setMode("idle")
+        setView("idle")
         setTav("")
         onSuccess()
       },
@@ -43,7 +51,29 @@ export function PendingReviewPanel({ vehicleId, onSuccess }: Props) {
     }
   )
 
-  // ── Retrigger AI valuation ─────────────────────────────
+  // ── Reevaluation manual entry ──────────────────────────
+  const [manualReevaluation, { loading: reevaluating }] = useMutation(
+    ManualReevaluationDocument,
+    {
+      onCompleted: () => {
+        appToast.success({
+          title: "Reevaluation TAV set",
+          description: "Admin can now set a final offer",
+        })
+        setView("idle")
+        setTav("")
+        onSuccess()
+      },
+      onError: (err) => {
+        appToast.error({
+          title: "Failed to set reevaluation TAV",
+          description: err.message,
+        })
+      },
+    }
+  )
+
+  // ── Retrigger (works for both modes) ──────────────────
   const [retriggerValuation, { loading: retriggering }] = useMutation(
     RetriggerValuationDocument,
     {
@@ -52,7 +82,7 @@ export function PendingReviewPanel({ vehicleId, onSuccess }: Props) {
           title: "Valuation retriggered",
           description: "AI is reprocessing this vehicle",
         })
-        setMode("idle")
+        setView("idle")
         onSuccess()
       },
       onError: (err) => {
@@ -64,15 +94,20 @@ export function PendingReviewPanel({ vehicleId, onSuccess }: Props) {
     }
   )
 
-  async function handleProvideRange() {
+  const manualLoading = isReevaluation ? reevaluating : providing
+
+  async function handleManualSubmit() {
     if (!tav || !grade) return
-    await provideRange({
-      variables: {
-        vehicleId,
-        tav: Number(tav),
-        grade,
-      },
-    })
+
+    if (isReevaluation) {
+      await manualReevaluation({
+        variables: { vehicleId, tav: Number(tav), grade },
+      })
+    } else {
+      await provideRange({
+        variables: { vehicleId, tav: Number(tav), grade },
+      })
+    }
   }
 
   async function handleRetrigger() {
@@ -88,27 +123,30 @@ export function PendingReviewPanel({ vehicleId, onSuccess }: Props) {
         </div>
         <div>
           <h3 className="text-sm font-bold text-foreground">
-            AI Valuation Failed
+            {isReevaluation
+              ? "AI Reevaluation Failed"
+              : "AI Valuation Failed"}
           </h3>
           <p className="text-xs text-muted-foreground mt-0.5">
-            The AI model could not generate a TAV for this vehicle.
-            You can retrigger the valuation or enter it manually.
+            {isReevaluation
+              ? "The AI could not reevaluate the inspector's findings. Retrigger or enter the reevaluation TAV manually."
+              : "The AI model could not generate a TAV. Retrigger or enter it manually."}
           </p>
         </div>
       </div>
 
-      {/* Action buttons — idle state */}
-      {mode === "idle" && (
+      {/* Idle — action buttons */}
+      {view === "idle" && (
         <div className="flex gap-2">
           <button
-            onClick={() => setMode("retrigger")}
+            onClick={() => setView("retrigger")}
             className="flex-1 flex items-center justify-center gap-2 border border-border text-sm font-bold py-2.5 rounded-xl hover:bg-muted/30 transition-colors"
           >
             <RefreshCcw size={14} />
             Retrigger AI
           </button>
           <button
-            onClick={() => setMode("manual")}
+            onClick={() => setView("manual")}
             className="flex-1 flex items-center justify-center gap-2 bg-[#E8A020] text-white text-sm font-bold py-2.5 rounded-xl hover:opacity-90 transition-opacity"
           >
             <Calculator size={14} />
@@ -118,13 +156,13 @@ export function PendingReviewPanel({ vehicleId, onSuccess }: Props) {
       )}
 
       {/* Retrigger confirmation */}
-      {mode === "retrigger" && (
+      {view === "retrigger" && (
         <div className="space-y-3 border border-border rounded-xl p-4 bg-muted/20">
           <p className="text-sm text-foreground">
-            This will resubmit the vehicle to the AI model for reanalysis.
-            The vehicle will remain in{" "}
-            <span className="font-bold">PENDING_REVIEW</span> until the
-            AI completes processing.
+            {isReevaluation
+              ? "This will resubmit the inspector's report to the AI for reevaluation."
+              : "This will resubmit the vehicle to the AI model for reanalysis."}
+            {" "}The vehicle will remain in its current state until the AI completes processing.
           </p>
           <div className="flex gap-2">
             <button
@@ -132,13 +170,11 @@ export function PendingReviewPanel({ vehicleId, onSuccess }: Props) {
               disabled={retriggering}
               className="flex-1 bg-[#E8A020] text-white text-sm font-bold py-2 rounded-lg disabled:opacity-40 flex items-center justify-center gap-2"
             >
-              {retriggering && (
-                <Loader2 size={14} className="animate-spin" />
-              )}
+              {retriggering && <Loader2 size={14} className="animate-spin" />}
               {retriggering ? "Retriggering..." : "Confirm Retrigger"}
             </button>
             <button
-              onClick={() => setMode("idle")}
+              onClick={() => setView("idle")}
               className="flex-1 border border-border text-sm py-2 rounded-lg hover:bg-muted/30"
             >
               Cancel
@@ -148,17 +184,17 @@ export function PendingReviewPanel({ vehicleId, onSuccess }: Props) {
       )}
 
       {/* Manual TAV entry */}
-      {mode === "manual" && (
+      {view === "manual" && (
         <div className="space-y-3 border border-border rounded-xl p-4 bg-muted/20">
           <p className="text-xs text-muted-foreground">
-            Enter the TAV manually. Min and max will be calculated
-            automatically (70% and 105% of TAV).
+            {isReevaluation
+              ? "Enter the reevaluated TAV based on the inspector's findings. This will unlock the final offer panel."
+              : "Enter the TAV manually. Min and max will be calculated automatically."}
           </p>
 
-          {/* TAV input */}
           <div className="space-y-1.5">
             <label className="text-xs font-bold uppercase tracking-widest text-muted-foreground">
-              Total Asset Value (₦)
+              {isReevaluation ? "Reevaluated TAV (₦)" : "Total Asset Value (₦)"}
             </label>
             <input
               type="number"
@@ -167,7 +203,7 @@ export function PendingReviewPanel({ vehicleId, onSuccess }: Props) {
               onChange={(e) => setTav(e.target.value)}
               className="w-full border border-border rounded-lg px-3 py-2 text-sm outline-none focus:border-[#E8A020]"
             />
-            {tav && (
+            {tav && !isReevaluation && (
               <p className="text-xs text-muted-foreground">
                 Range: ₦{Math.round(Number(tav) * 0.7).toLocaleString()} —{" "}
                 ₦{Math.round(Number(tav) * 1.05).toLocaleString()}
@@ -175,7 +211,6 @@ export function PendingReviewPanel({ vehicleId, onSuccess }: Props) {
             )}
           </div>
 
-          {/* Grade selector */}
           <div className="space-y-1.5">
             <label className="text-xs font-bold uppercase tracking-widest text-muted-foreground">
               Vehicle Grade
@@ -200,21 +235,15 @@ export function PendingReviewPanel({ vehicleId, onSuccess }: Props) {
 
           <div className="flex gap-2">
             <button
-              onClick={handleProvideRange}
-              disabled={!tav || providing}
+              onClick={handleManualSubmit}
+              disabled={!tav || manualLoading}
               className="flex-1 bg-[#E8A020] text-white text-sm font-bold py-2 rounded-lg disabled:opacity-40 flex items-center justify-center gap-2"
             >
-              {providing && (
-                <Loader2 size={14} className="animate-spin" />
-              )}
-              {providing ? "Setting TAV..." : "Confirm TAV"}
+              {manualLoading && <Loader2 size={14} className="animate-spin" />}
+              {manualLoading ? "Setting..." : "Confirm TAV"}
             </button>
             <button
-              onClick={() => {
-                setMode("idle")
-                setTav("")
-                setGrade("B")
-              }}
+              onClick={() => { setView("idle"); setTav(""); setGrade("B") }}
               className="flex-1 border border-border text-sm py-2 rounded-lg hover:bg-muted/30"
             >
               Cancel

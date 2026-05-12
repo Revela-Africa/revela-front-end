@@ -16,6 +16,9 @@ interface OfferStore {
   offer: number | null;
   imageUrls: { imageUrl: string; angle: string }[];
 
+  // interface
+  vehicleStatus: string | null;
+
   // Bank details / bookingReference
   bankName: string;
   accountNumber: string;
@@ -48,6 +51,7 @@ interface OfferStore {
   setBankDetails: (bankName: string, accountNumber: string) => void;
   setSchedule: (collectionDate: string, timeSlot: string) => void;
   setCollectionAddress: (address: string) => void;
+  setVehicleStatus: (status: string) => void;
   reset: () => void;
 }
 
@@ -71,6 +75,7 @@ const initialState = {
   region: "",
   collectionAddress: "",
   bookingReference: "",
+  vehicleStatus: null,
 };
 
 export const useOfferStore = create<OfferStore>((set) => ({
@@ -107,4 +112,5 @@ export const useOfferStore = create<OfferStore>((set) => ({
   setCollectionAddress: (address: string) =>
     set({ collectionAddress: address }),
   reset: () => set(initialState),
+  setVehicleStatus: (status) => set({ vehicleStatus: status }),
 }));

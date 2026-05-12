@@ -2,11 +2,16 @@
 
 import { useMemo, useState } from "react";
 import { useQuery } from "@apollo/client/react";
-import { GetVehiclesByUserDocument } from "@/graphql/generated/graphql";
+import {
+  GetUserDashboardDocument,
+  GetVehiclesByUserDocument,
+} from "@/graphql/generated/graphql";
 import Link from "next/link";
 import EmptyState from "./components/EmptyState";
 import { VehicleList } from "./components/VehicleList";
 import { Plus, Search, X } from "lucide-react";
+import { AnimatePresence, motion } from "framer-motion";
+import { PortfolioCard } from "../home/_components/PortfolioCard";
 
 export default function page() {
   const [search, setSearch] = useState("");
@@ -14,6 +19,8 @@ export default function page() {
   const { data, loading } = useQuery(GetVehiclesByUserDocument, {
     fetchPolicy: "cache-and-network",
   });
+  const { data: userDashboardData } = useQuery(GetUserDashboardDocument);
+  const dashBoardData = userDashboardData?.getUserDashboard;
 
   const vehicles = useMemo(() => {
     const list = data?.getVehiclesByUser ?? [];
@@ -53,6 +60,20 @@ export default function page() {
         </Link>
       </div>
 
+      <AnimatePresence mode="popLayout">
+        {(dashBoardData?.totalVehicles ?? 0) > 1 && (
+          <motion.div
+            key="portfolio-card"
+            initial={{ opacity: 0, y: 16, scale: 0.98 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: -12, scale: 0.98 }}
+            transition={{ duration: 0.35, ease: [0.25, 0.46, 0.45, 0.94] }}
+            layout
+          >
+            <PortfolioCard dashBoardData={dashBoardData} />
+          </motion.div>
+        )}
+      </AnimatePresence>
       {/* Search */}
       <div className="relative">
         <Search

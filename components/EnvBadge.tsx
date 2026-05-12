@@ -5,7 +5,7 @@ export function EnvBadge() {
   if (isProduction) return null // never show in production
 
   return (
-    <div className="fixed top-10 font-inter left-4 z-50 bg-(--gold) border border-white/80 text-xs text-white font-bold px-3 py-2 rounded-full shadow-lg">
+    <div className="fixed hidden top-10 font-inter left-4 z-50 bg-(--gold) border border-white/80 text-xs text-white font-bold px-3 py-2 rounded-full shadow-lg">
       STAGING
     </div>
   )

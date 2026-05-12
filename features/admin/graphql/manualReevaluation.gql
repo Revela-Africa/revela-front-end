@@ -1,0 +1,3 @@
+mutation ManualReevaluation($vehicleId: String!, $tav: Float!, $grade: String!) {
+  manualReevaluation(vehicleId: $vehicleId, tav: $tav, grade: $grade)
+}

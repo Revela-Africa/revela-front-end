@@ -50,7 +50,8 @@ export function RevenueChart() {
       </div>
 
       <p className="text-3xl font-extrabold tracking-tight text-[#171D17]">
-        ₦{current.revenue.toFixed(1)}M
+        {/* ₦{current.revenue.toFixed(1)}M */}
+        ₦0
       </p>
       <p className="mb-6 text-xs text-[#6A6A6A]">
         {current.month} 2026 · Month to date
